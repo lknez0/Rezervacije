@@ -1,0 +1,48 @@
+{
+    "rezervacije": [
+      {
+         "id":1,
+         "naziv_objekta":"Boogie Lab Zagreb",
+         "adresa_objekta":"Ulica kneza Borne 26, Zagreb",
+         "ime_gosta":"Ivo Ivić",
+         "broj_mobitela_gosta":"0915882463",
+         "vrijeme_pocetka":"19:00",
+         "vrijeme_zavrsetka":"22:00",
+         "datum_rezervacije":"24.07.2023.",
+         "broj_stolica":4
+      },
+      {
+         "id":2,
+         "naziv_objekta":"Leggiero",
+         "adresa_objekta":"Maksimirsko naselje IV 25, Zagreb",
+         "ime_gosta":"Marko Marić",
+         "broj_mobitela_gosta":"0998882425",
+         "vrijeme_pocetka":"14:00",
+         "vrijeme_zavrsetka":"15:00",
+         "datum_rezervacije":"15.09.2023.",
+         "broj_stolica":2
+      },
+      {
+         "id":3,
+         "naziv_objekta":"The Beertija",
+         "adresa_objekta":"Ulica Pavla Hatza 16, Zagreb",
+         "ime_gosta":"Ana Anić",
+         "broj_mobitela_gosta":"0925653421",
+         "vrijeme_pocetka":"11:30",
+         "vrijeme_zavrsetka":"13:00",
+         "datum_rezervacije":"03.08.2023.",
+         "broj_stolica":5
+      },
+      {
+         "id":4,
+         "naziv_objekta":"Boogie Lab Zagreb",
+         "adresa_objekta":"Ulica kneza Borne 26, Zagreb",
+         "ime_gosta":"Pero Perić",
+         "broj_mobitela_gosta":"0924771414",
+         "vrijeme_pocetka":"18:00",
+         "vrijeme_zavrsetka":"20:00",
+         "datum_rezervacije":"30.11.2023.",
+         "broj_stolica":2
+      }
+   ]
+}
