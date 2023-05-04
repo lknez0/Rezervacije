@@ -1,4 +1,4 @@
-import { EditIcon, ViewIcon } from "@chakra-ui/icons"
+import { DeleteIcon, EditIcon, ViewIcon } from "@chakra-ui/icons"
 import { 
   Box, 
   SimpleGrid,
@@ -10,6 +10,7 @@ import {
   CardBody,
   CardFooter,
   Divider,
+  HStack,
   Button
 } from "@chakra-ui/react"
 
@@ -109,7 +110,10 @@ export default function Dashboard() {
           <Divider borderColor="gray.200" />
 
           <CardFooter>
-            <Button variant="ghost" leftIcon={<EditIcon />}>Uredi</Button>
+          <HStack>
+              <Button variant="ghost" leftIcon={<DeleteIcon />}>Obriši</Button>
+              <Button variant="ghost" leftIcon={<EditIcon />}>Uredi</Button>
+            </HStack>
           </CardFooter>
 
         </Card>
