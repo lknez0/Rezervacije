@@ -1,9 +1,8 @@
-
-export default function Create() {
-
+import FormLayout from '../layouts/FormLayout'
+  
+  export default function Create() {
+  
     return (
-        <div>
-
-        </div>
-    );
-}
+      <FormLayout/>
+    )
+  }

@@ -11,10 +11,15 @@ import {
   CardFooter,
   Divider,
   HStack,
-  Button
+  Button,
+  useToast
 } from "@chakra-ui/react"
+import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
+  const toast = useToast();
+  const navigate = useNavigate();
+
   const rezervacije = [
       {
         "id":1,
@@ -83,6 +88,33 @@ export default function Dashboard() {
       }
   ]
 
+  const deleteReservation = () => {
+    // AXIOS obrisi rezervaciju
+    // refreshaj listu
+
+    toast({
+      title: 'Obrisana rezervacija',
+      description: "Rezervacija koju ste odabrali je obrisana",
+      status: 'success',
+      duration: 9000,
+      isClosable: true
+    });
+  };
+
+  const updateReservation = () => {
+    // navigacija - otvori formu
+    navigate('/update/1')
+    
+    // na povratku alert
+    toast({
+      title: 'Uredi rezervaciju',
+      description: "Rezervacija koju ste odabrali je uređena",
+      status: 'success',
+      duration: 9000,
+      isClosable: true
+    });
+  };
+
   return (
     <SimpleGrid spacing={10} minChildWidth={300}>
       {rezervacije && rezervacije.map(rezervacija => (
@@ -111,8 +143,8 @@ export default function Dashboard() {
 
           <CardFooter>
           <HStack>
-              <Button variant="ghost" leftIcon={<DeleteIcon />}>Obriši</Button>
-              <Button variant="ghost" leftIcon={<EditIcon />}>Uredi</Button>
+              <Button variant="ghost" leftIcon={<DeleteIcon />} onClick={deleteReservation}>Obriši</Button>
+              <Button variant="ghost" leftIcon={<EditIcon />} onClick={updateReservation}>Uredi</Button>
             </HStack>
           </CardFooter>
 

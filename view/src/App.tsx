@@ -16,7 +16,7 @@ const router = createBrowserRouter(
     <Route path="/" element={<RootLayout />}>
       <Route index element={<Dashboard />} />
       <Route path="create" element={<Create />} />
-      <Route path="update" element={<Update />} />
+      <Route path="update/:id" element={<Update />} />
     </Route>
   )
 )
