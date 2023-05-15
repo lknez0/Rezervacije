@@ -12,9 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -85,30 +82,6 @@ public class RezervacijaController {
         }
     }
     
-   
-    
-    //TODO
-    @PutMapping("/{id}")
-    public ResponseEntity<Rezervacija> updateRezervacija(
-            @PathVariable("id") Long id,
-            @RequestBody Rezervacija rezervacija) {
-    	// TODO
-        Rezervacija updatedRezervacija = rezervacijaService.updateRezervacija(id, rezervacija);
-        
-        if (updatedRezervacija != null) {
-            return ResponseEntity.ok(updatedRezervacija);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-
-    
-    //TODO
-    @PostMapping
-    public void createRezervacija(@RequestBody Rezervacija Rezervacija) {
-        rezervacijaService.createRezervacija(Rezervacija);
-    }
     
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteRezervacijaById(@PathVariable Long id) {
