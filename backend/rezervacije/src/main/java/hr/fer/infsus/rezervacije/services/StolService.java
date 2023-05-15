@@ -19,8 +19,8 @@ public class StolService {
 		List<Stol> dostupniStolovi = stolRepository.
 				findAvailableStolByTerminAndDatumRezervacijeAndPozicija(idTermina, datumRezervacije, idPozicije);
 	
-		if(dostupniStolovi == null || dostupniStolovi.size() == 0)
-			new IllegalArgumentException("Stol ID not available");
+		if(dostupniStolovi == null || dostupniStolovi.isEmpty())
+			throw new IllegalArgumentException("Stol ID not available");
 		
 		return dostupniStolovi.get(0);
 	

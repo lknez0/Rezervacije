@@ -1,24 +1,27 @@
 package hr.fer.infsus.rezervacije.controllers;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import hr.fer.infsus.rezervacije.models.FormDataRezervacije;
 import hr.fer.infsus.rezervacije.models.Gost;
 import hr.fer.infsus.rezervacije.models.GostProjection;
 import hr.fer.infsus.rezervacije.models.Pozicija;
-import hr.fer.infsus.rezervacije.models.ReservationRequest;
 import hr.fer.infsus.rezervacije.models.Rezervacija;
 import hr.fer.infsus.rezervacije.models.Stol;
 import hr.fer.infsus.rezervacije.models.Termin;
@@ -61,21 +64,20 @@ public class FormDataController {
 	    return ResponseEntity.ok(data);
 	}
 	
-	@PostMapping
-    public ResponseEntity<?> createReservation(@RequestBody ReservationRequest request) {
+	@PostMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ResponseEntity<?> createReservation(@RequestBody  MultiValueMap<String, String> formData) {
        
         try {
-        	Long idGosta = request.getIdGosta();
-            String brojMobitelaGosta = request.getBrojMobitelaGosta();
-            Long idObjekta = request.getIdObjekta();
-            String datumRezervacije = request.getDatumRezervacije();
-            int brojOsoba = request.getBrojOsoba();
-            Long idPozicije = request.getVrstaStola();
-            Long idTermina = request.getTerminRezervacija();
-            
+        	Long idGosta= Long.parseLong(formData.getFirst("id_gosta"));
+        	String brojMobitelaGosta = formData.getFirst("broj_mobitela_gosta");
+        	Long idObjekta = Long.parseLong(formData.getFirst("id_objekta"));
+            String datumRezervacije = formData.getFirst("datum_rezervacije");
+            int brojOsoba = Integer.parseInt(formData.getFirst("broj_osoba"));
+            Long idPozicije = Long.parseLong(formData.getFirst("vrsta_stola"));
+            Long idTermina = Long.parseLong(formData.getFirst("termin_rezervacija"));           
             
             // priprema podataka
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy.");
             LocalDate rezDatum = LocalDate.parse(datumRezervacije, formatter);
             
             Stol stol = stolService.getAvailableStol(idTermina, idPozicije, rezDatum);  // provjerava dostupnost
@@ -101,6 +103,7 @@ public class FormDataController {
             reservation.setTermin(termin);
             reservation.setStol(stol);
             reservation.setUsluzniObjekt(usluzniObjekt);
+            reservation.setTst(new Timestamp(System.currentTimeMillis()));
             
             
             rezervacijaService.createRezervacija(reservation);
@@ -113,21 +116,22 @@ public class FormDataController {
         }
     }
 	
+
 	@PutMapping("/{id}")
-	public ResponseEntity<?> updateReservation(@PathVariable Long id, @RequestBody ReservationRequest request) {
+	public ResponseEntity<?> updateReservation(@PathVariable Long id, @RequestParam MultiValueMap<String, String> formData) {
 		try {
 			Rezervacija existingReservation = rezervacijaService.getRezervacijaById(id);
 			
-			Long idGosta = request.getIdGosta();
-			String brojMobitelaGosta = request.getBrojMobitelaGosta();
-			Long idObjekta = request.getIdObjekta();
-			String datumRezervacije = request.getDatumRezervacije();
-			int brojOsoba = request.getBrojOsoba();
-			Long idPozicije = request.getVrstaStola();
-			Long idTermina = request.getTerminRezervacija();
+			Long idGosta = Long.parseLong(formData.getFirst("id_gosta"));
+	        String brojMobitelaGosta = formData.getFirst("broj_mobitela_gosta");
+	        Long idObjekta = Long.parseLong(formData.getFirst("id_objekta"));
+	        String datumRezervacije = formData.getFirst("datum_rezervacije");
+	        int brojOsoba = Integer.parseInt(formData.getFirst("broj_osoba"));
+	        Long idPozicije = Long.parseLong(formData.getFirst("vrsta_stola"));
+	        Long idTermina = Long.parseLong(formData.getFirst("termin_rezervacija"));
 
 			// priprema podataka
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy.");
 			LocalDate rezDatum = LocalDate.parse(datumRezervacije, formatter);
 
 			Stol stol = stolService.getAvailableStol(idTermina, idPozicije, rezDatum);  // provjerava dostupnost
