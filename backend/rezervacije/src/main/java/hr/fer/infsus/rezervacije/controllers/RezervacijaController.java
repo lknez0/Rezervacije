@@ -3,7 +3,11 @@ package hr.fer.infsus.rezervacije.controllers;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +70,41 @@ public class RezervacijaController {
 	    FormDataRezervacije data = new FormDataRezervacije(gostList, pozicijaList, terminMap, usluzniObjektiList);
 	    return ResponseEntity.ok(data);
 	}
+	
+	@GetMapping("/all")
+    public ResponseEntity<?> getRezervacijas() {
+    	List<Rezervacija> rezervacije = rezervacijaService.getAllRezervacijas();
+    	
+    	
+    	List<Map<String, Object>> body = new LinkedList<>();
+    	
+    	for(var rez : rezervacije) {
+    		Map<String, Object> data = new LinkedHashMap<>();
+    		
+    		Long id = rez.getGost().getIdGosta() * 100000 
+    				+ rez.getTermin().getIdTermina() * 1000
+    				+ rez.getStol().getIdStola();
+    		
+    		data.put("id", id);
+    		data.put("nazivObjekta", rez.getUsluzniObjekt().getNazivObjekta());
+    		data.put("adresaObjekta", rez.getUsluzniObjekt().getAdresaObjekta());
+    		data.put("imeGosta", rez.getGost().getKorisnik().getImeKorisnika() + " " 
+    		+ rez.getGost().getKorisnik().getPrezimeKorisnika());
+    		data.put("brojMobitelaGosta", rez.getGost().getBrojMobitela());
+    		data.put("vrijemePocetka", rez.getTermin().getVrijemePocetka());
+    		data.put("vrijemeZavrsetka", rez.getTermin().getVrijemeZavrsetka());
+    		data.put("datumRezervacije", rez.getDatumRezervacije());
+    		data.put("danUTjednu", rez.getDatumRezervacije().getDayOfWeek().getDisplayName(TextStyle.FULL, new Locale("hr", "HR")));
+    		data.put("brojOsoba", rez.getBrojOsoba());
+    		data.put("brojStolica", rez.getStol().getBrojStolica());
+    		data.put("pozicijaStola", rez.getStol().getPozicija().getNazivPozicije());
+    		
+    		body.add(data);
+    		
+    	}
+    	
+        return ResponseEntity.ok(body);
+    }
 	
 	@PostMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ResponseEntity<?> createReservation(@RequestBody  MultiValueMap<String, String> formData) {
@@ -131,36 +170,71 @@ public class RezervacijaController {
 			
 			// čitanje dobivenih podataka
 			Long idGosta = Long.parseLong(formData.getFirst("id_gosta"));
-	        String brojMobitelaGosta = formData.getFirst("broj_mobitela_gosta");
+			Long idPozicije = Long.parseLong(formData.getFirst("vrsta_stola"));
+	        Long idTermina = Long.parseLong(formData.getFirst("termin_rezervacija"));
 	        Long idObjekta = Long.parseLong(formData.getFirst("id_objekta"));
 	        String datumRezervacije = formData.getFirst("datum_rezervacije");
 	        int brojOsoba = Integer.parseInt(formData.getFirst("broj_osoba"));
-	        Long idPozicije = Long.parseLong(formData.getFirst("vrsta_stola"));
-	        Long idTermina = Long.parseLong(formData.getFirst("termin_rezervacija"));
-
-			// priprema podataka
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy.");
+	        String brojMobitelaGosta = formData.getFirst("broj_mobitela_gosta");
+	        
+	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy.");
 			LocalDate rezDatum = LocalDate.parse(datumRezervacije, formatter);
+	        
+	        // provjera mijenja li se primarni ključ
+	        // ako da, potrebno stvoriti novu rezervaciju
+			
+			// promjena idObjekta => promjena idTermina, pa nije potrebna provjera
+	        if(!idGosta.equals(existingReservation.getGost().getIdGosta())
+	           || !idTermina.equals(existingReservation.getTermin().getIdTermina()) 
+	           || !idPozicije.equals(existingReservation.getStol().getPozicija().getIdPozicije()) 
+	           || brojOsoba < existingReservation.getStol().getBrojStolica()) // premalo stolica
+	        {
+	        	// Briši postojeću rezervaciju
+	            rezervacijaService.deleteRezervacijaById(id);
 
-			Stol stol = stolService.getAvailableStol(idTermina, idPozicije, rezDatum, brojOsoba);  // provjerava dostupnost
-			UsluzniObjekt usluzniObjekt = usluzniObjektService.getById(idObjekta);
-			Gost gost = gostService.getById(idGosta);
-			Termin termin = terminService.getById(idTermina);
+	            // Kreiraj novu rezervaciju sa novim idStola
+	            Stol stol = stolService.getAvailableStol(idTermina, idPozicije, rezDatum, brojOsoba);
+	            UsluzniObjekt usluzniObjekt = usluzniObjektService.getById(idObjekta);
+	            Gost gost = gostService.getById(idGosta);
+	            Termin termin = terminService.getById(idTermina);
+	            
+	            // Moguće azuriranje podataka gosta
+				
+				if (brojMobitelaGosta != null && !brojMobitelaGosta.strip().isEmpty()) {
+					gost = gostService.updateBrojMobitela(idGosta, brojMobitelaGosta);
+					existingReservation.setGost(gost);
+				    
+				}
 
-			// moguće azuriranje podataka
+	            // Kreiraj novu rezervaciju
+	            Rezervacija newReservation = new Rezervacija();
+	            newReservation.setBrojOsoba(brojOsoba);
+	            newReservation.setDatumRezervacije(rezDatum);
+	            newReservation.setGost(gost);
+	            newReservation.setTermin(termin);
+	            newReservation.setStol(stol);
+	            newReservation.setUsluzniObjekt(usluzniObjekt);
+
+	            // Pohrani novu rezervaciju
+	            rezervacijaService.createRezervacija(newReservation);
+
+	            return ResponseEntity.ok(newReservation);
+	        }
+
+	        // samo update
+	        // moguće za vrijednosti: broj osoba, datum rezervacije, broj mobitela gosta
+	        existingReservation.setBrojOsoba(brojOsoba);
+	        existingReservation.setDatumRezervacije(rezDatum);
+	     
+
+			// moguće azuriranje podataka gosta
 			
 			if (brojMobitelaGosta != null && !brojMobitelaGosta.strip().isEmpty()) {
-			    gost = gostService.updateBrojMobitela(idGosta, brojMobitelaGosta);
+				Gost gost = gostService.updateBrojMobitela(idGosta, brojMobitelaGosta);
+				existingReservation.setGost(gost);
+			    
 			}
-
-			// azuriranje
-			existingReservation.setBrojOsoba(brojOsoba);
-			existingReservation.setDatumRezervacije(rezDatum);
-			existingReservation.setGost(gost);
-			existingReservation.setTermin(termin);
-			existingReservation.setStol(stol);
-			existingReservation.setUsluzniObjekt(usluzniObjekt);
-
+			
 			//pohrana
 			rezervacijaService.updateRezervacija(existingReservation);
 
