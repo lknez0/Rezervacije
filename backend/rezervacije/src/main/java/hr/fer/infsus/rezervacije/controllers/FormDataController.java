@@ -4,6 +4,8 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -36,7 +38,7 @@ import hr.fer.infsus.rezervacije.services.TerminService;
 import hr.fer.infsus.rezervacije.services.UsluzniObjektService;
 
 @RestController
-@RequestMapping("/rezervacija-forma")
+@RequestMapping("/rezervacije-form")
 public class FormDataController {
 	@Autowired
     private GostService gostService;
@@ -51,16 +53,16 @@ public class FormDataController {
 	@Autowired
 	private StolService stolService;
 	
+	
+	
 	@GetMapping
 	public ResponseEntity<?> getCombinedData() {
-		
 	    List<GostProjection> gostList = gostService.getAllKorisniciImePrezimeIdGosta();
 	    List<Pozicija> pozicijaList = pozicijaService.getAllPozicija();
-	    List<TerminProjection> terminList = terminService.getAllIdPocetakZavrsetak();
-	   
+	    Map<Long, List<TerminProjection>> terminMap = terminService.getAllIdPocetakZavrsetakGrouped();
 	    List<UsluzniObjektProjection> usluzniObjektiList = usluzniObjektService.getAllUsluzniObjekti();
 
-	    FormDataRezervacije data = new FormDataRezervacije(gostList, pozicijaList, terminList, usluzniObjektiList);
+	    FormDataRezervacije data = new FormDataRezervacije(gostList, pozicijaList, terminMap, usluzniObjektiList);
 	    return ResponseEntity.ok(data);
 	}
 	

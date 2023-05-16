@@ -11,7 +11,9 @@ import hr.fer.infsus.rezervacije.models.TerminProjection;
 
 @Repository
 public interface TerminRepository extends JpaRepository<Termin, Long>{
-	@Query("SELECT t.idTermina AS idTermina, t.vrijemePocetka AS vrijemePocetka, t.vrijemeZavrsetka AS vrijemeZavrsetka FROM Termin t ")
-    List<TerminProjection> findAllIdPocetakZavrsetak();
+	@Query("SELECT t.usluzniObjekt.idObjekta as idObjekta, t.idTermina as idTermina, "
+			+ "t.vrijemePocetka as vrijemePocetka, t.vrijemeZavrsetka as vrijemeZavrsetka "
+			+ "FROM Termin t JOIN t.usluzniObjekt")
+	List<TerminProjection> findAllIdPocetakZavrsetak();
 
 }

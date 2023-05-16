@@ -22,6 +22,6 @@ public class TerminController {
     @GetMapping
     public ResponseEntity<?> getAllKorisnici() {
         List<TerminProjection> termini = terminService.getAllIdPocetakZavrsetak();
-        return new ResponseEntity<>(termini, HttpStatus.OK);
+       return new ResponseEntity<>(termini, HttpStatus.OK);
     }
 }

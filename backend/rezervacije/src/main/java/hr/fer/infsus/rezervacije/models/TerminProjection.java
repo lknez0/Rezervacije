@@ -1,8 +1,8 @@
 package hr.fer.infsus.rezervacije.models;
 
 public interface TerminProjection {
-	Long getIdTermina();
-	String getVrijemePocetka();
-	String getVrijemeZavrsetka();
-
+    Long getIdTermina();
+    Long getIdObjekta();
+    String getVrijemePocetka();
+    String getVrijemeZavrsetka();
 }

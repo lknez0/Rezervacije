@@ -1,6 +1,8 @@
 package hr.fer.infsus.rezervacije.services;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,4 +25,8 @@ public class TerminService {
         return terminRepository.findAllIdPocetakZavrsetak();
     }
 
+    public Map<Long, List<TerminProjection>> getAllIdPocetakZavrsetakGrouped() {
+        List<TerminProjection> terminList = terminRepository.findAllIdPocetakZavrsetak();
+        return terminList.stream().collect(Collectors.groupingBy(TerminProjection::getIdObjekta));
+    }
 }
