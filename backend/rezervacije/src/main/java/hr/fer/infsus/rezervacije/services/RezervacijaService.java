@@ -25,6 +25,10 @@ public class RezervacijaService {
     public void updateRezervacija(Rezervacija rezervacija) {
         rezervacijaRepository.save(rezervacija);
     }
+    
+    public Rezervacija getRezervacijaById(Long idGosta, Long idTermina, Long idStola) {
+		return rezervacijaRepository.findByGostIdGostaAndTerminIdTerminaAndStolIdStola(idGosta, idTermina, idStola);
+	}
 
 	public Rezervacija getRezervacijaById(Long id) {
 		Long idGosta = id / 100000;
@@ -32,7 +36,7 @@ public class RezervacijaService {
 	    Long idStola = id % 1000;
 	    
 		
-		return rezervacijaRepository.findByGostIdGostaAndTerminIdTerminaAndStolIdStola(idGosta, idTermina, idStola);
+		return getRezervacijaById(idGosta, idTermina, idStola);
 	}
 
 

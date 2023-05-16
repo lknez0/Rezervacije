@@ -20,7 +20,7 @@ public class StolService {
 				findAvailableStolByTerminAndDatumRezervacijeAndPozicija(idTermina, datumRezervacije, idPozicije);
 	
 		if(dostupniStolovi == null || dostupniStolovi.isEmpty())
-			throw new IllegalArgumentException("Stol ID not available");
+			throw new IllegalArgumentException("Nema dostupnih stolova");
 		
 		return dostupniStolovi.get(0);
 	

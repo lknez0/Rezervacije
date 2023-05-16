@@ -38,7 +38,7 @@ import hr.fer.infsus.rezervacije.services.TerminService;
 import hr.fer.infsus.rezervacije.services.UsluzniObjektService;
 
 @RestController
-@RequestMapping("/rezervacije-form")
+@RequestMapping("/rezervacije")
 public class FormDataController {
 	@Autowired
     private GostService gostService;
@@ -70,6 +70,7 @@ public class FormDataController {
     public ResponseEntity<?> createReservation(@RequestBody  MultiValueMap<String, String> formData) {
        
         try {
+        	// čitanje dobivenih podataka
         	Long idGosta= Long.parseLong(formData.getFirst("id_gosta"));
         	String brojMobitelaGosta = formData.getFirst("broj_mobitela_gosta");
         	Long idObjekta = Long.parseLong(formData.getFirst("id_objekta"));
@@ -83,21 +84,24 @@ public class FormDataController {
             LocalDate rezDatum = LocalDate.parse(datumRezervacije, formatter);
             
             Stol stol = stolService.getAvailableStol(idTermina, idPozicije, rezDatum);  // provjerava dostupnost
-            
-            if(brojOsoba < stol.getBrojStolica()) {
-            	throw new IllegalArgumentException("Nedovoljno stolica");
-            }
-            
             UsluzniObjekt usluzniObjekt = usluzniObjektService.getById(idObjekta);
             Gost gost = gostService.getById(idGosta);
             Termin termin = terminService.getById(idTermina);
             
-            // azuriranje mobitela ako je potrebno
-            if(brojMobitelaGosta == null || !brojMobitelaGosta.strip().equals("")) {
-            	gost = gostService.updateBrojMobitela(idGosta, brojMobitelaGosta);
+            
+            
+            // validacija i moguće azuriranje
+           
+            if(brojOsoba > stol.getBrojStolica()) {
+            	throw new IllegalArgumentException("Nedovoljno stolica");
             }
             
-                   
+            if (brojMobitelaGosta != null && !brojMobitelaGosta.strip().isEmpty()) {
+                gost = gostService.updateBrojMobitela(idGosta, brojMobitelaGosta);
+            }
+            
+            // stvaranje rezervacije
+            
             Rezervacija reservation = new Rezervacija();
             reservation.setBrojOsoba(brojOsoba);
             reservation.setDatumRezervacije(rezDatum);
@@ -107,11 +111,11 @@ public class FormDataController {
             reservation.setUsluzniObjekt(usluzniObjekt);
             reservation.setTst(new Timestamp(System.currentTimeMillis()));
             
-            
+            // pohrana
             rezervacijaService.createRezervacija(reservation);
-
-            Long id = idGosta * 100000 + idTermina * 1000 + stol.getIdStola();
-            return ResponseEntity.status(HttpStatus.CREATED).body(rezervacijaService.getRezervacijaById(id));
+            
+            Rezervacija rez = rezervacijaService.getRezervacijaById(idGosta, idTermina, stol.getIdStola());
+            return ResponseEntity.status(HttpStatus.CREATED).body(rez);
         } catch(RuntimeException e) {
         	String errorMessage = "Error creating reservation: " + e.getMessage();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
@@ -122,8 +126,10 @@ public class FormDataController {
 	@PutMapping("/{id}")
 	public ResponseEntity<?> updateReservation(@PathVariable Long id, @RequestParam MultiValueMap<String, String> formData) {
 		try {
+			// dohvat rezervacije
 			Rezervacija existingReservation = rezervacijaService.getRezervacijaById(id);
 			
+			// čitanje dobivenih podataka
 			Long idGosta = Long.parseLong(formData.getFirst("id_gosta"));
 	        String brojMobitelaGosta = formData.getFirst("broj_mobitela_gosta");
 	        Long idObjekta = Long.parseLong(formData.getFirst("id_objekta"));
@@ -137,20 +143,21 @@ public class FormDataController {
 			LocalDate rezDatum = LocalDate.parse(datumRezervacije, formatter);
 
 			Stol stol = stolService.getAvailableStol(idTermina, idPozicije, rezDatum);  // provjerava dostupnost
-
-			if (brojOsoba < stol.getBrojStolica()) {
-			    throw new IllegalArgumentException("Nedovoljno stolica");
-			}
-
 			UsluzniObjekt usluzniObjekt = usluzniObjektService.getById(idObjekta);
 			Gost gost = gostService.getById(idGosta);
 			Termin termin = terminService.getById(idTermina);
 
-			// azuriranje mobitela ako je potrebno
-			if (brojMobitelaGosta == null || !brojMobitelaGosta.strip().equals("")) {
+			// validacija i moguće azuriranje
+
+			if (brojOsoba > stol.getBrojStolica()) {
+			    throw new IllegalArgumentException("Nedovoljno stolica");
+			}
+			
+			if (brojMobitelaGosta != null && !brojMobitelaGosta.strip().isEmpty()) {
 			    gost = gostService.updateBrojMobitela(idGosta, brojMobitelaGosta);
 			}
 
+			// azuriranje
 			existingReservation.setBrojOsoba(brojOsoba);
 			existingReservation.setDatumRezervacije(rezDatum);
 			existingReservation.setGost(gost);
@@ -158,6 +165,7 @@ public class FormDataController {
 			existingReservation.setStol(stol);
 			existingReservation.setUsluzniObjekt(usluzniObjekt);
 
+			//pohrana
 			rezervacijaService.updateRezervacija(existingReservation);
 
 			return ResponseEntity.ok(existingReservation);

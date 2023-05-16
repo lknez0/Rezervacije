@@ -19,7 +19,7 @@ import hr.fer.infsus.rezervacije.models.Rezervacija;
 import hr.fer.infsus.rezervacije.services.RezervacijaService;
 
 @RestController
-@RequestMapping("/rezervacije")
+@RequestMapping("/rezervacija")
 public class RezervacijaController {
 
     @Autowired
