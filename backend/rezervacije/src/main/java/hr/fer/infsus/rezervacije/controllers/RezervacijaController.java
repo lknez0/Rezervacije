@@ -128,8 +128,7 @@ public class RezervacijaController {
             Gost gost = gostService.getById(idGosta);
             Termin termin = terminService.getById(idTermina);
             
-            
-            
+
             // moguće azuriranje podataka
             
             if (brojMobitelaGosta != null && !brojMobitelaGosta.strip().isEmpty()) {
@@ -163,6 +162,7 @@ public class RezervacijaController {
 	public ResponseEntity<?> updateReservation(@PathVariable Long id, @RequestParam MultiValueMap<String, String> formData) {
 		try {
 			// dohvat rezervacije
+			
 			Rezervacija existingReservation = rezervacijaService.getRezervacijaById(id);
 			if(existingReservation == null) {
 				throw new IllegalArgumentException("Nepoznata rezervacija");
@@ -187,7 +187,7 @@ public class RezervacijaController {
 	        if(!idGosta.equals(existingReservation.getGost().getIdGosta())
 	           || !idTermina.equals(existingReservation.getTermin().getIdTermina()) 
 	           || !idPozicije.equals(existingReservation.getStol().getPozicija().getIdPozicije()) 
-	           || brojOsoba < existingReservation.getStol().getBrojStolica()) // premalo stolica
+	           || brojOsoba > existingReservation.getStol().getBrojStolica()) // premalo stolica
 	        {
 	        	// Briši postojeću rezervaciju
 	            rezervacijaService.deleteRezervacijaById(id);
@@ -214,13 +214,15 @@ public class RezervacijaController {
 	            newReservation.setTermin(termin);
 	            newReservation.setStol(stol);
 	            newReservation.setUsluzniObjekt(usluzniObjekt);
+	            newReservation.setTst(existingReservation.getTst());
+	            
 
 	            // Pohrani novu rezervaciju
 	            rezervacijaService.createRezervacija(newReservation);
 
 	            return ResponseEntity.ok(newReservation);
 	        }
-
+	        System.out.println("Here");
 	        // samo update
 	        // moguće za vrijednosti: broj osoba, datum rezervacije, broj mobitela gosta
 	        existingReservation.setBrojOsoba(brojOsoba);

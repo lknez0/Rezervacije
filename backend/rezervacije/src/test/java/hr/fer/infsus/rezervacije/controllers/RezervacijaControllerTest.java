@@ -115,8 +115,8 @@ class RezervacijaControllerTest {
         when(gostService.updateBrojMobitela(1L, "097541283")).thenReturn(gost);
         when(stolService.getAvailableStol(anyLong(), anyLong(), any(LocalDate.class), anyInt())).thenReturn(stol);
         when(usluzniObjektService.getById(2L)).thenReturn(usluzniObjekt);
-        when(terminService.getById(4L)).thenReturn(termin);
-        when(rezervacijaService.getRezervacijaById(1L, 4L, 2L)).thenReturn(createdReservation);
+        when(terminService.getById(1L)).thenReturn(termin);
+        when(rezervacijaService.getRezervacijaById(1L, 1L, 2L)).thenReturn(createdReservation);
         doNothing().when(rezervacijaService).createRezervacija(any(Rezervacija.class));
 
         // Act
@@ -198,15 +198,24 @@ class RezervacijaControllerTest {
 	    MultiValueMap<String, String> formData = createFormData();
 
 	    // Mock objekti
-	    Rezervacija existingReservation = new Rezervacija();
-	    Gost gost = new Gost();
-	    Stol stol = new Stol();
-	    stol.setBrojStolica(6);
-	    stol.setIdStola(2L);
-	    UsluzniObjekt usluzniObjekt = new UsluzniObjekt();
-	    Termin termin = new Termin();
+        Rezervacija existingReservation = new Rezervacija();
+        Gost gost = new Gost();
+        Stol stol = new Stol();
+        UsluzniObjekt usluzniObjekt = new UsluzniObjekt();
+        Termin termin = new Termin();
+        
+        stol.setIdStola(1L);
+        stol.setPozicija(new Pozicija(1L, "sredina"));
+        gost.setIdGosta(1L);
+        termin.setIdTermina(1L);
+        stol.setBrojStolica(6);  // dovoljno stolica
+        
+        existingReservation.setGost(gost);
+        existingReservation.setStol(stol);
+        existingReservation.setTermin(termin);
 	    
 	    // Set up mock service methods
+        doNothing().when(rezervacijaService).deleteRezervacijaById(anyLong());
 	    when(rezervacijaService.getRezervacijaById(anyLong())).thenReturn(existingReservation);
 	    when(gostService.getById(anyLong())).thenReturn(gost);
 	    when(gostService.updateBrojMobitela(anyLong(), anyString())).thenReturn(gost);
@@ -220,10 +229,54 @@ class RezervacijaControllerTest {
 
 	    // Assert
 	    assertEquals(HttpStatus.OK, response.getStatusCode());
-	    assertEquals(existingReservation, response.getBody());
+	    assertEquals(existingReservation, response.getBody());  
 	    
 	    // Verify service methods were called
-	    verify(rezervacijaService).updateRezervacija(existingReservation);
+	    verify(gostService).updateBrojMobitela(anyLong(), anyString());
+	}
+	
+	@Test
+	void updateReservationSuccess_IdChange() {
+	    // Arrange
+	    
+		// Stvori "zahtjev"
+	    MultiValueMap<String, String> formData = createFormData();
+
+	    // Mock objekti
+        Rezervacija existingReservation = new Rezervacija();
+        Gost gost = new Gost();
+        Stol stol = new Stol();
+        UsluzniObjekt usluzniObjekt = new UsluzniObjekt();
+        Termin termin = new Termin();
+        
+        stol.setIdStola(1L);
+        stol.setPozicija(new Pozicija(1L, "sredina"));
+        gost.setIdGosta(2L);  // novi ključ!
+        termin.setIdTermina(1L);
+        stol.setBrojStolica(6);  // dovoljno stolica
+        
+        existingReservation.setGost(gost);
+        existingReservation.setStol(stol);
+        existingReservation.setTermin(termin);
+	    
+	    // Set up mock service methods
+        doNothing().when(rezervacijaService).deleteRezervacijaById(anyLong());
+	    when(rezervacijaService.getRezervacijaById(anyLong())).thenReturn(existingReservation);
+	    when(gostService.getById(anyLong())).thenReturn(gost);
+	    when(gostService.updateBrojMobitela(anyLong(), anyString())).thenReturn(gost);
+	    when(stolService.getAvailableStol(anyLong(), anyLong(), any(LocalDate.class), anyInt())).thenReturn(stol);
+	    when(usluzniObjektService.getById(anyLong())).thenReturn(usluzniObjekt);
+	    when(terminService.getById(anyLong())).thenReturn(termin);
+	    doNothing().when(rezervacijaService).updateRezervacija(any(Rezervacija.class));
+
+	    // Act
+	    ResponseEntity<?> response = rezervacijaController.updateReservation(1L, formData);
+
+	    // Assert
+	    assertEquals(HttpStatus.OK, response.getStatusCode());
+	    assertNotEquals(existingReservation, response.getBody());  // jer promjena primary keya
+	    
+	    // Verify service methods were called
 	    verify(gostService).updateBrojMobitela(anyLong(), anyString());
 	}
 	
@@ -256,10 +309,18 @@ class RezervacijaControllerTest {
         Rezervacija existingReservation = new Rezervacija();
         Gost gost = new Gost();
         Stol stol = new Stol();
-        stol.setBrojStolica(6);  // dovoljno stolica
-        stol.setIdStola(2L);  // id za get kasnije
         UsluzniObjekt usluzniObjekt = new UsluzniObjekt();
         Termin termin = new Termin();
+        
+        stol.setIdStola(1L);
+        stol.setPozicija(new Pozicija(1L, "sredina"));
+        gost.setIdGosta(1L);
+        termin.setIdTermina(1L);
+        stol.setBrojStolica(1);  // nedovoljno stolica
+        
+        existingReservation.setGost(gost);
+        existingReservation.setStol(stol);
+        existingReservation.setTermin(termin);
 
         // Set up mock service methods
         when(rezervacijaService.getRezervacijaById(anyLong())).thenReturn(existingReservation);
@@ -288,16 +349,24 @@ class RezervacijaControllerTest {
         Rezervacija existingReservation = new Rezervacija();
         Gost gost = new Gost();
         Stol stol = new Stol();
-        stol.setBrojStolica(1);  // nedovoljno stolica
         UsluzniObjekt usluzniObjekt = new UsluzniObjekt();
         Termin termin = new Termin();
-
+        
+        stol.setIdStola(1L);
+        stol.setPozicija(new Pozicija(1L, "sredina"));
+        gost.setIdGosta(1L);
+        termin.setIdTermina(1L);
+        stol.setBrojStolica(1);  // nedovoljno stolica
+        
+        existingReservation.setGost(gost);
+        existingReservation.setStol(stol);
+        existingReservation.setTermin(termin);
         // Set up mock service methods
         when(rezervacijaService.getRezervacijaById(anyLong())).thenReturn(existingReservation);
         when(gostService.getById(1L)).thenReturn(gost);
         when(gostService.updateBrojMobitela(1L, "097541283")).thenReturn(gost);
-        when(usluzniObjektService.getById(2L)).thenReturn(usluzniObjekt);
-        when(terminService.getById(4L)).thenReturn(termin);
+        when(usluzniObjektService.getById(1L)).thenReturn(usluzniObjekt);
+        when(terminService.getById(1L)).thenReturn(termin);
         when(stolService.getAvailableStol(anyLong(), anyLong(), any(LocalDate.class), anyInt())).thenThrow(new IllegalArgumentException("Nema dovoljno stolica"));
 
         // Act
@@ -312,7 +381,8 @@ class RezervacijaControllerTest {
 	void deleteRezervacijaById() {
 	    // Arrange
 	    Long rezervacijaId = 1L;
-
+	    doNothing().when(rezervacijaService).deleteRezervacijaById(anyLong());
+	    
 	    // Act
 	    ResponseEntity<?> response = rezervacijaController.deleteRezervacijaById(rezervacijaId);
 
@@ -487,8 +557,8 @@ class RezervacijaControllerTest {
         formData.add("id_objekta", "2");
         formData.add("datum_rezervacije", "01.01.2023.");
         formData.add("broj_osoba", "4");
-        formData.add("vrsta_stola", "3");
-        formData.add("termin_rezervacija", "4");
+        formData.add("vrsta_stola", "1");
+        formData.add("termin_rezervacija", "1");
         
         return formData;
 	}
