@@ -21,7 +21,12 @@ public class GostService {
     }
     
     public Gost getById(Long idGosta) {
-    	return gostRepository.findById(idGosta).orElseThrow(() -> new IllegalArgumentException("Invalid Gost ID"));
+    	Optional<Gost> gost = gostRepository.findById(idGosta);
+    	
+    	if(gost.isPresent())
+    		return gost.get();
+    	else
+    	 throw new IllegalArgumentException("Invalid Gost ID");
     }
     
     public Gost updateBrojMobitela(Long id, String newBrojMobitela) {

@@ -85,4 +85,20 @@ public class Korisnik {
 		this.tst = tst;
 	}
 
+	public Korisnik(Long idKorisnika, String imeKorisnika, String prezimeKorisnika, String korisnickoIme, String email,
+			String lozinka, Timestamp tst) {
+		this.idKorisnika = idKorisnika;
+		this.imeKorisnika = imeKorisnika;
+		this.prezimeKorisnika = prezimeKorisnika;
+		this.korisnickoIme = korisnickoIme;
+		this.email = email;
+		this.lozinka = lozinka;
+		this.tst = tst;
+	}
+
+	public Korisnik() {
+	}
+	
+	
+
 }

@@ -72,7 +72,7 @@ public class RezervacijaController {
 	}
 	
 	@GetMapping("/all")
-    public ResponseEntity<?> getRezervacijas() {
+    public ResponseEntity<?> getReservations() {
     	List<Rezervacija> rezervacije = rezervacijaService.getAllRezervacijas();
     	
     	
@@ -222,7 +222,6 @@ public class RezervacijaController {
 
 	            return ResponseEntity.ok(newReservation);
 	        }
-	        System.out.println("Here");
 	        // samo update
 	        // moguće za vrijednosti: broj osoba, datum rezervacije, broj mobitela gosta
 	        existingReservation.setBrojOsoba(brojOsoba);
@@ -249,9 +248,9 @@ public class RezervacijaController {
 	}
 	
 	@DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteRezervacijaById(@PathVariable Long id) {
+    public ResponseEntity<?> deleteReservationById(@PathVariable Long id) {
         rezervacijaService.deleteRezervacijaById(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 }

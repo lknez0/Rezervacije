@@ -259,7 +259,7 @@ class RezervacijaControllerTest {
         existingReservation.setStol(stol);
         existingReservation.setTermin(termin);
 	    
-	    // Set up mock service methods
+	   
         doNothing().when(rezervacijaService).deleteRezervacijaById(anyLong());
 	    when(rezervacijaService.getRezervacijaById(anyLong())).thenReturn(existingReservation);
 	    when(gostService.getById(anyLong())).thenReturn(gost);
@@ -322,7 +322,7 @@ class RezervacijaControllerTest {
         existingReservation.setStol(stol);
         existingReservation.setTermin(termin);
 
-        // Set up mock service methods
+        
         when(rezervacijaService.getRezervacijaById(anyLong())).thenReturn(existingReservation);
         when(gostService.getById(1L)).thenReturn(gost);
         when(gostService.updateBrojMobitela(1L, "097541283")).thenReturn(gost);
@@ -361,7 +361,8 @@ class RezervacijaControllerTest {
         existingReservation.setGost(gost);
         existingReservation.setStol(stol);
         existingReservation.setTermin(termin);
-        // Set up mock service methods
+        
+        
         when(rezervacijaService.getRezervacijaById(anyLong())).thenReturn(existingReservation);
         when(gostService.getById(1L)).thenReturn(gost);
         when(gostService.updateBrojMobitela(1L, "097541283")).thenReturn(gost);
@@ -384,7 +385,7 @@ class RezervacijaControllerTest {
 	    doNothing().when(rezervacijaService).deleteRezervacijaById(anyLong());
 	    
 	    // Act
-	    ResponseEntity<?> response = rezervacijaController.deleteRezervacijaById(rezervacijaId);
+	    ResponseEntity<?> response = rezervacijaController.deleteReservationById(rezervacijaId);
 
 	    // Assert
 	    assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());

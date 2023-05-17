@@ -59,5 +59,15 @@ public class Stol {
 		this.pozicija = pozicija;
 	}
 
+	public Stol(Long idStola, Integer brojStolica, UsluzniObjekt usluzniObjekt, Pozicija pozicija) {
+		this.idStola = idStola;
+		this.brojStolica = brojStolica;
+		this.usluzniObjekt = usluzniObjekt;
+		this.pozicija = pozicija;
+	}
+
+	public Stol() {
+	}
+
     
 }
