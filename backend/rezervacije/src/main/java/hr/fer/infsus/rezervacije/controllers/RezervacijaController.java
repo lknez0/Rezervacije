@@ -90,7 +90,7 @@ public class RezervacijaController {
         return ResponseEntity.ok(body);
     }
 	
-	@GetMapping("/id}")
+	@GetMapping("/{id}")
 	 public ResponseEntity<?> getReservationForm(@PathVariable Long id) {
 		Rezervacija rez = rezervacijaService.getRezervacijaById(id);
 		
