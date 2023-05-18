@@ -104,7 +104,9 @@ public class RezervacijaController {
 		formData.add("termin_rezervacija", rez.getTermin().getIdTermina().toString());
 
    	
-       return ResponseEntity.ok(formData);
+       return ResponseEntity.status(HttpStatus.OK)
+    		   .contentType(MediaType.APPLICATION_JSON)
+               .body(formData.toSingleValueMap());
    }
 	
 	
@@ -153,6 +155,7 @@ public class RezervacijaController {
             
             Rezervacija rez = rezervacijaService.getRezervacijaById(idGosta, idTermina, stol.getIdStola());
             return ResponseEntity.status(HttpStatus.CREATED)
+            		   .contentType(MediaType.APPLICATION_JSON)
             		.body(rezervacijaService.buildRezervacijaProjection(rez));
         } catch(RuntimeException e) {
         	String errorMessage = "Error creating reservation: " + e.getMessage();
