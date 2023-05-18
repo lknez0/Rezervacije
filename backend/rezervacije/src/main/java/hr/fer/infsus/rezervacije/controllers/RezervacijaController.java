@@ -3,11 +3,8 @@ package hr.fer.infsus.rezervacije.controllers;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.format.TextStyle;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,34 +71,20 @@ public class RezervacijaController {
 	@GetMapping("/all")
     public ResponseEntity<?> getReservations() {
     	List<Rezervacija> rezervacije = rezervacijaService.getAllRezervacijas();
-    	
-    	
     	List<Map<String, Object>> body = new LinkedList<>();
     	
     	for(var rez : rezervacije) {
-    		Map<String, Object> data = new LinkedHashMap<>();
-    		
-    		Long id = rez.getGost().getIdGosta() * 100000 
-    				+ rez.getTermin().getIdTermina() * 1000
-    				+ rez.getStol().getIdStola();
-    		
-    		data.put("id", id);
-    		data.put("nazivObjekta", rez.getUsluzniObjekt().getNazivObjekta());
-    		data.put("adresaObjekta", rez.getUsluzniObjekt().getAdresaObjekta());
-    		data.put("imeGosta", rez.getGost().getKorisnik().getImeKorisnika() + " " 
-    		+ rez.getGost().getKorisnik().getPrezimeKorisnika());
-    		data.put("brojMobitelaGosta", rez.getGost().getBrojMobitela());
-    		data.put("vrijemePocetka", rez.getTermin().getVrijemePocetka());
-    		data.put("vrijemeZavrsetka", rez.getTermin().getVrijemeZavrsetka());
-    		data.put("datumRezervacije", rez.getDatumRezervacije());
-    		data.put("danUTjednu", rez.getDatumRezervacije().getDayOfWeek().getDisplayName(TextStyle.FULL, new Locale("hr", "HR")));
-    		data.put("brojOsoba", rez.getBrojOsoba());
-    		data.put("brojStolica", rez.getStol().getBrojStolica());
-    		data.put("pozicijaStola", rez.getStol().getPozicija().getNazivPozicije());
-    		
+    		Map<String, Object> data = rezervacijaService.buildRezervacijaProjection(rez);	
     		body.add(data);
-    		
     	}
+    	
+        return ResponseEntity.ok(body);
+    }
+	
+	@GetMapping("/{id}")
+	 public ResponseEntity<?> getReservation(@PathVariable Long id) {
+		Rezervacija rez = rezervacijaService.getRezervacijaById(id);
+    	Map<String, Object> body = rezervacijaService.buildRezervacijaProjection(rez);	
     	
         return ResponseEntity.ok(body);
     }
@@ -150,7 +133,8 @@ public class RezervacijaController {
             rezervacijaService.createRezervacija(reservation);
             
             Rezervacija rez = rezervacijaService.getRezervacijaById(idGosta, idTermina, stol.getIdStola());
-            return ResponseEntity.status(HttpStatus.CREATED).body(rez);
+            return ResponseEntity.status(HttpStatus.CREATED)
+            		.body(rezervacijaService.buildRezervacijaProjection(rez));
         } catch(RuntimeException e) {
         	String errorMessage = "Error creating reservation: " + e.getMessage();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
@@ -220,7 +204,7 @@ public class RezervacijaController {
 	            // Pohrani novu rezervaciju
 	            rezervacijaService.createRezervacija(newReservation);
 
-	            return ResponseEntity.ok(newReservation);
+	            return ResponseEntity.ok(rezervacijaService.buildRezervacijaProjection(newReservation));
 	        }
 	        // samo update
 	        // moguće za vrijednosti: broj osoba, datum rezervacije, broj mobitela gosta
@@ -239,7 +223,7 @@ public class RezervacijaController {
 			//pohrana
 			rezervacijaService.updateRezervacija(existingReservation);
 
-			return ResponseEntity.ok(existingReservation);
+			return ResponseEntity.ok(rezervacijaService.buildRezervacijaProjection(existingReservation));
 		} catch(RuntimeException e) {
         	String errorMessage = "Error updating reservation: " + e.getMessage();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);

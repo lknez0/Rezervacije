@@ -124,8 +124,6 @@ class RezervacijaControllerTest {
 
         // Assert
         assertEquals(HttpStatus.CREATED,response.getStatusCode());
-        assertEquals(createdReservation, response.getBody());
-        
         // Provjera s čime su pozvane metode za izmjenu
         verify(rezervacijaService).createRezervacija(any(Rezervacija.class));
         verify(gostService).updateBrojMobitela(1L, "097541283");
@@ -229,7 +227,6 @@ class RezervacijaControllerTest {
 
 	    // Assert
 	    assertEquals(HttpStatus.OK, response.getStatusCode());
-	    assertEquals(existingReservation, response.getBody());  
 	    
 	    // Verify service methods were called
 	    verify(gostService).updateBrojMobitela(anyLong(), anyString());

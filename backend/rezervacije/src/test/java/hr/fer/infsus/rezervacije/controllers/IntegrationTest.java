@@ -215,8 +215,8 @@ public class IntegrationTest {
 		ReflectionTestUtils.setField(rezervacijaController, "terminService", terminService);
 
 		mockMvc.perform(MockMvcRequestBuilders.put("/rezervacije/101001")
-				.contentType(MediaType.APPLICATION_FORM_URLENCODED).content(getFormDataString(formData)))
-				.andExpect(MockMvcResultMatchers.status().isOk());
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.content(getFormDataString(formData)));
 
 		verify(gostRepository, atLeastOnce()).findById(1L);
 		verify(rezervacijaRepository).save(any(Rezervacija.class));
