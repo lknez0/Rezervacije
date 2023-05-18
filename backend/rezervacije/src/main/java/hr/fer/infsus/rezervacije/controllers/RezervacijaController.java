@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -81,13 +82,31 @@ public class RezervacijaController {
         return ResponseEntity.ok(body);
     }
 	
-	@GetMapping("/{id}")
+	@GetMapping("/info/{id}")
 	 public ResponseEntity<?> getReservation(@PathVariable Long id) {
 		Rezervacija rez = rezervacijaService.getRezervacijaById(id);
     	Map<String, Object> body = rezervacijaService.buildRezervacijaProjection(rez);	
     	
         return ResponseEntity.ok(body);
     }
+	
+	@GetMapping("/id}")
+	 public ResponseEntity<?> getReservationForm(@PathVariable Long id) {
+		Rezervacija rez = rezervacijaService.getRezervacijaById(id);
+		
+		MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+		formData.add("id_gosta", rez.getGost().getIdGosta().toString());
+		formData.add("broj_mobitela_gosta", rez.getGost().getBrojMobitela());
+		formData.add("id_objekta", rez.getUsluzniObjekt().getIdObjekta().toString());
+		formData.add("datum_rezervacije", rez.getDatumRezervacije().toString());
+		formData.add("broj_osoba", Integer.toString(rez.getBrojOsoba()));
+		formData.add("vrsta_stola", rez.getStol().getPozicija().getIdPozicije().toString());
+		formData.add("termin_rezervacija", rez.getTermin().getIdTermina().toString());
+
+   	
+       return ResponseEntity.ok(formData);
+   }
+	
 	
 	@PostMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ResponseEntity<?> createReservation(@RequestBody  MultiValueMap<String, String> formData) {
