@@ -136,8 +136,8 @@ export default  function Update() {
 
       const handleSubmit = async(e : any) => {
         e.preventDefault();
-        console.log(form);
-        axios.put('http://localhost:8081/rezervacije/' + id, form).then(response => {
+        console.log(JSON.stringify(form));
+        axios.put('http://localhost:8081/rezervacije/' + id, JSON.stringify(form)).then(response => {
            console.log(response);
            navigate('/');
         }).catch((response) => {

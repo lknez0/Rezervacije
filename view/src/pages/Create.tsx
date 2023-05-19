@@ -127,8 +127,8 @@ import {
   
         const handleSubmit = async(e : any) => {
           e.preventDefault();
-          console.log(form);
-          axios.post('http://localhost:8081/rezervacije', form).then(response => {
+          console.log( JSON.stringify(form));
+          axios.post('http://localhost:8081/rezervacije', JSON.stringify(form)).then(response => {
              console.log(response)
              navigate('/');
           }) 
