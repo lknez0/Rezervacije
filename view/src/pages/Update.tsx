@@ -58,7 +58,7 @@ interface FormData {
     datumRezervacije: string,
     brojOsoba: number,
     pozicija: number,
-    terminRezervacije: number
+    terminRezervacija: number
 }
 
 
@@ -75,7 +75,7 @@ export default  function Update() {
         datumRezervacije: '',
         brojOsoba: 1,
         pozicija: 1,
-        terminRezervacije: 1
+        terminRezervacija: 1
     })
     
     const {state} = useLocation();
@@ -127,19 +127,22 @@ export default  function Update() {
       }
 
       const handlePozicijaChange = (value : any) => {
-        setForm({ ...form, ['pozicija']: value});
+        setForm({ ...form, ['pozicija']: parseInt(value)});
       }
 
       const handleTerminChange = (value : any) => {
-        setForm({ ...form, ['terminRezervacije']: value});
+        setForm({ ...form, ['terminRezervacija']: parseInt(value)});
       }
 
       const handleSubmit = async(e : any) => {
         e.preventDefault();
         console.log(form);
-        axios.put('http://localhost:8081/rezervacije' + id, form).then(response => {
+        axios.put('http://localhost:8081/rezervacije/' + id, form).then(response => {
            console.log(response);
            navigate('/');
+        }).catch((response) => {
+          console.log("error")
+          console.log(response);
         }) 
       }
   
@@ -190,7 +193,7 @@ export default  function Update() {
                   <Box>
                       <FormControl isRequired display="flex" alignItems="center" mb="40px">
                           <FormLabel>Broj osoba:</FormLabel>
-                          <NumberInput min={1}>
+                          <NumberInput min={1} defaultValue={form.brojOsoba}>
                               <NumberInputField name='brojOsoba' 
                               value={form.brojOsoba} onChange={handleChange}/>
                               <NumberInputStepper>
@@ -215,7 +218,7 @@ export default  function Update() {
                       <FormControl isRequired mb="40px">
                           <FormLabel>Termin rezervacije:</FormLabel>
                           <RadioGroup 
-                              value={form.terminRezervacije.toString()} onChange={handleTerminChange}>
+                              value={form.terminRezervacija.toString()} onChange={handleTerminChange}>
                               <Stack direction='column' >
                               {termini && termini.map((termin) => (
                                 <Radio value={termin.idTermina.toString()}>

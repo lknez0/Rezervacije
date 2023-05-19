@@ -118,11 +118,11 @@ import {
         }
   
         const handlePozicijaChange = (value : any) => {
-          setForm({ ...form, ['pozicija']: value});
+          setForm({ ...form, ['pozicija']: parseInt(value)});
         }
   
         const handleTerminChange = (value : any) => {
-          setForm({ ...form, ['terminRezervacije']: value});
+          setForm({ ...form, ['terminRezervacije']: parseInt(value)});
         }
   
         const handleSubmit = async(e : any) => {
