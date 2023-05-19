@@ -34,8 +34,8 @@ import hr.fer.infsus.rezervacije.services.RezervacijaService;
 import hr.fer.infsus.rezervacije.services.TerminService;
 import hr.fer.infsus.rezervacije.services.UsluzniObjektService;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*")
 @RequestMapping("/rezervacije")
 public class RezervacijaController {
 	@Autowired
@@ -89,14 +89,14 @@ public class RezervacijaController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Reservation not found");
 		}
 
-		MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
-		formData.add("id_gosta", rez.getGost().getIdGosta().toString());
-		formData.add("broj_mobitela_gosta", rez.getGost().getBrojMobitela());
-		formData.add("id_objekta", rez.getUsluzniObjekt().getIdObjekta().toString());
-		formData.add("datum_rezervacije", rez.getDatumRezervacije().toString());
-		formData.add("broj_osoba", Integer.toString(rez.getBrojOsoba()));
-		formData.add("vrsta_stola", rez.getStol().getPozicija().getIdPozicije().toString());
-		formData.add("termin_rezervacija", rez.getTermin().getIdTermina().toString());
+		MultiValueMap<String, Object> formData = new LinkedMultiValueMap<>();
+		formData.add("idGosta", rez.getGost().getIdGosta());
+		formData.add("brojMobitelaGosta", rez.getGost().getBrojMobitela());
+		formData.add("idObjekta", rez.getUsluzniObjekt().getIdObjekta());
+		formData.add("datumRezervacije", rez.getDatumRezervacije());
+		formData.add("brojOsoba", rez.getBrojOsoba());
+		formData.add("pozicija", rez.getStol().getPozicija().getIdPozicije());
+		formData.add("terminRezervacija", rez.getTermin().getIdTermina());
 
 		return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
 				.body(formData.toSingleValueMap());
