@@ -1,5 +1,8 @@
 package hr.fer.infsus.rezervacije.services;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -8,8 +11,14 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MultiValueMap;
 
+import hr.fer.infsus.rezervacije.models.Gost;
+import hr.fer.infsus.rezervacije.models.ReservationData;
 import hr.fer.infsus.rezervacije.models.Rezervacija;
+import hr.fer.infsus.rezervacije.models.Stol;
+import hr.fer.infsus.rezervacije.models.Termin;
+import hr.fer.infsus.rezervacije.models.UsluzniObjekt;
 import hr.fer.infsus.rezervacije.repository.RezervacijaRepository;
 
 @Service
@@ -17,38 +26,56 @@ public class RezervacijaService {
 	
 	@Autowired
     private RezervacijaRepository rezervacijaRepository;
+	
+	@Autowired
+	private GostService gostService;
+	@Autowired
+	private TerminService terminService;
+	@Autowired
+	private UsluzniObjektService usluzniObjektService;
+	@Autowired
+	private StolService stolService;
+	
+	private final long GOST_ID_MULT = 100000000;
+	private final long TERMIN_ID_MULT =  100000;
+	private final long STOL_ID_MULT = 100;
+	
 
     public List<Rezervacija> getAllRezervacijas() {
         return rezervacijaRepository.findAll();
     }
     
 
-    public void createRezervacija(Rezervacija rezervacija) {
-    	rezervacijaRepository.save(rezervacija);
+    public Rezervacija saveRezervacija(Rezervacija rezervacija) {
+    	return rezervacijaRepository.save(rezervacija);
     }
 
-    public void updateRezervacija(Rezervacija rezervacija) {
-        rezervacijaRepository.save(rezervacija);
-    }
     
     public Rezervacija getRezervacijaById(Long idGosta, Long idTermina, Long idStola) {
 		return rezervacijaRepository.findByGostIdGostaAndTerminIdTerminaAndStolIdStola(idGosta, idTermina, idStola);
 	}
 
 	public Rezervacija getRezervacijaById(Long id) {
-		Long idGosta = id / 100000;
-	    Long idTermina = (id / 1000) % 100;
-	    Long idStola = id % 1000;
+		Long idGosta = id / GOST_ID_MULT;
+	    Long idTermina = (id / TERMIN_ID_MULT) % STOL_ID_MULT;
+	    Long idStola = id % TERMIN_ID_MULT;
 	    
 		
 		return getRezervacijaById(idGosta, idTermina, idStola);
 	}
 	
+	public void deleteRezervacijaById(Long id) {
+	    Rezervacija rezervacija = getRezervacijaById(id);
+	    if (rezervacija != null) {
+	        rezervacijaRepository.delete(rezervacija);
+	    }
+	}
+	
 	public Map<String, Object> buildRezervacijaProjection(Rezervacija rez) {
 		Map<String, Object> data = new LinkedHashMap<>();
 		
-		Long id = rez.getGost().getIdGosta() * 100000 
-				+ rez.getTermin().getIdTermina() * 1000
+		Long id = rez.getGost().getIdGosta() * GOST_ID_MULT 
+				+ rez.getTermin().getIdTermina() * TERMIN_ID_MULT
 				+ rez.getStol().getIdStola();
 		
 		data.put("id", id);
@@ -68,13 +95,74 @@ public class RezervacijaService {
 		return data;
 		
 	}
+	
+	 public Rezervacija createRezervacija(ReservationData data) {
+	        Stol stol = stolService.getAvailableStol(data.getIdTermina(), data.getIdPozicije(),
+	                data.getDatumRezervacije(), data.getBrojOsoba());
+	        UsluzniObjekt usluzniObjekt = usluzniObjektService.getById(data.getIdObjekta());
+	        Termin termin = terminService.getById(data.getIdTermina());
+	        Gost gost = gostService.updateNumberIfNeeded(data.getIdGosta(), data.getBrojMobitelaGosta());
 
-
-	public void deleteRezervacijaById(Long id) {
-	    Rezervacija rezervacija = getRezervacijaById(id);
-	    if (rezervacija != null) {
-	        rezervacijaRepository.delete(rezervacija);
+	        return createRezervacija(data, stol, termin, gost, usluzniObjekt);
 	    }
+	
+	private Rezervacija createRezervacija(ReservationData data, Stol stol, Termin termin, Gost gost, UsluzniObjekt objekt) {
+		Rezervacija rezervacija = new Rezervacija();
+		rezervacija.setBrojOsoba(data.getBrojOsoba());
+		rezervacija.setDatumRezervacije(data.getDatumRezervacije());
+		rezervacija.setGost(gost);
+		rezervacija.setTermin(termin);
+		rezervacija.setStol(stol);
+		rezervacija.setUsluzniObjekt(objekt);
+		rezervacija.setTst(new Timestamp(System.currentTimeMillis()));
+        
+        return rezervacija;
 	}
+
+	
+	public void updateReservation(Rezervacija existingReservation, ReservationData data) {
+		Gost gost = gostService.updateNumberIfNeeded(data.getIdGosta(), data.getBrojMobitelaGosta());
+		existingReservation.setGost(gost);
+		
+	    LocalDate datumRezervacije = data.getDatumRezervacije();
+	    int brojOsoba = data.getBrojOsoba();
+	  
+	    
+	    existingReservation.setBrojOsoba(brojOsoba);
+	    existingReservation.setDatumRezervacije(datumRezervacije);
+	   
+	}
+	
+	public ReservationData extractReservationData(MultiValueMap<String, String> formData) {
+		 ReservationData data = new ReservationData();
+
+		 
+		 data.setIdGosta(Long.parseLong(formData.getFirst("id_gosta")));
+		 data.setIdPozicije(Long.parseLong(formData.getFirst("vrsta_stola")));
+		 data.setIdTermina(Long.parseLong(formData.getFirst("termin_rezervacija")));
+		 data.setIdObjekta(Long.parseLong(formData.getFirst("id_objekta")));
+		 
+		 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy.");
+		 data.setDatumRezervacije(LocalDate.parse(formData.getFirst("datum_rezervacije"), formatter));
+		 
+		 data.setBrojOsoba(Integer.parseInt(formData.getFirst("broj_osoba")));
+		 data.setBrojMobitelaGosta(formData.getFirst("broj_mobitela_gosta"));
+
+		 return data;
+	}
+	
+	public boolean requiresNewRezervacija(Rezervacija existingReservation, ReservationData updateData) {
+	    Long idGosta = updateData.getIdGosta();
+	    Long idPozicije = updateData.getIdPozicije();
+	    Long idTermina = updateData.getIdTermina();
+	    int brojOsoba = updateData.getBrojOsoba();
+
+	    return !idGosta.equals(existingReservation.getGost().getIdGosta())
+	        || !idTermina.equals(existingReservation.getTermin().getIdTermina())
+	        || !idPozicije.equals(existingReservation.getStol().getPozicija().getIdPozicije())
+	        || brojOsoba > existingReservation.getStol().getBrojStolica();
+	}
+
+	
 
 }

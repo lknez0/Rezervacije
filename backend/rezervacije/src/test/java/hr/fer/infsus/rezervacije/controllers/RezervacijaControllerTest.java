@@ -54,9 +54,6 @@ class RezervacijaControllerTest {
 	private UsluzniObjektService usluzniObjektService;
 	
 	@Mock
-	private StolService stolService;
-	
-	@Mock
 	private RezervacijaService rezervacijaService;
 	
 
