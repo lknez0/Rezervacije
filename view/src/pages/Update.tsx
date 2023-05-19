@@ -25,31 +25,46 @@ import axios from "axios";
 import { Form } from 'react-router-dom'
 import { useLocation } from "react-router-dom";
 
-interface Rezervacija {
-  id: number,
-  nazivObjekta:string,
-  adresaObjekta:string,
-  imeGosta:string,
-  brojMobitelaGosta:string,
-  vrijemePocetka:string,
-  vrijemeZavrsetka:string,
-  datumRezervacije:string,
-  danUTjednu:string,
-  brojOsoba:number,
-  brojStolica:number,
-  pozicijaStola:string
-};
+interface Data {
+    gosti: [],
+    termini: {},
+    pozicije: [],
+    usluzniObjekti: []
+  }
+
+
+interface FormData {
+    idGosta: number,
+    brojMobitelaGosta: string,
+    idObjekta: number,
+    datumRezervacije: string,
+    brojOsoba: number,
+    pozicija: number,
+    terminRezervacije: number
+}
+
 
 export default  function Update() {
     const [data, setData] = useState([]);
-    const [rezervacija, setRezervacija] = useState();
+    const [form, setForm] = useState<FormData>({
+        idGosta: 1,
+        brojMobitelaGosta: '',
+        idObjekta: 1,
+        datumRezervacije: '',
+        brojOsoba: 1,
+        pozicija: 1,
+        terminRezervacije: 1
+    })
+    
     const {state} = useLocation();
     const { id } = state;
 
     const fetchRezervacija =() => {
         axios.get('http://localhost:8081/rezervacije/' + id).then((response) => {
-          setRezervacija(response.data);
-          console.log(rezervacija);
+
+          if (response.data != undefined)
+            setForm(response.data);
+          console.log(form);
         });
       }
 
@@ -65,17 +80,39 @@ export default  function Update() {
         fetchRezervacija();
         fetchData();
       }, []);
+
+      const handleChange = (e : any) => {
+        const {name, value} = e.target;
+        setForm({ ...form, [name]: value });
+      }
+
+      const handlePozicijaChange = (value : any) => {
+        setForm({ ...form, ['pozicija']: value});
+      }
+
+      const handleTerminChange = (value : any) => {
+        setForm({ ...form, ['terminRezervacije']: value});
+      }
+
+      const handleSubmit = async(e : any) => {
+        e.preventDefault();
+        console.log(form);
+        axios.put('http://localhost:8081/rezervacije' + id, form).then(response => {
+           console.log(response)
+        }) 
+      }
   
 
       return (
         <Box maxWidth={'1000px'} justifyContent={'center'}>
-          <Form>
+          <Form onSubmit={handleSubmit}>
               <HStack justifyContent={'space-between'} alignItems={'start'}>
                   <Box>
                       <FormControl isRequired mb="40px">
                           <FormLabel>Odaberi gosta:</FormLabel>
-                          <Select>
-                          <option value='option1'>gost</option>
+                          <Select name='idGosta' value={form.idGosta} onChange={handleChange}>
+                            <option value={1}>Ana Anic</option>
+                            <option value={2}>Pero Peric</option>
                           </Select>
                       </FormControl>
   
@@ -83,17 +120,17 @@ export default  function Update() {
                           <FormLabel>Broj mobitela:</FormLabel>
                           <InputGroup>
                               <InputLeftAddon children='+385' />
-                              <Input type='tel' placeholder='phone number' />
+                              <Input type='tel' placeholder='phone number' name='brojMobitelaGosta' value={form.brojMobitelaGosta} onChange={handleChange}/>
                           </InputGroup>
                           <FormHelperText>U slučaju promjena u rezervaciji.</FormHelperText>
                       </FormControl>
   
                       <FormControl isRequired mb="40px">
                           <FormLabel>Odaberi objekt:</FormLabel>
-                          <Select>
-                              <option value='option1'>Boogie Lab Zagreb, Ulica kneza Borne 26, Zagreb</option>
-                              <option value='option2'>The Beertija, Ulica Pavla Hatza 16, Zagreb</option>
-                              <option value='option2'>Leggiero, Maksimirsko naselje IV 25, Zagreb</option>
+                          <Select  name='idObjekta' value={form.idObjekta} onChange={handleChange}>
+                              <option value={1}>Boogie Lab Zagreb, Ulica kneza Borne 26, Zagreb</option>
+                              <option value={2}>The Beertija, Ulica Pavla Hatza 16, Zagreb</option>
+                              <option value={3}>Leggiero, Maksimirsko naselje IV 25, Zagreb</option>
                           </Select>
                       </FormControl>
   
@@ -103,14 +140,17 @@ export default  function Update() {
                               placeholder="Select Date and Time"
                               size="md"
                               type='date'
+                              name='datumRezervacije' 
+                              value={form.datumRezervacije} onChange={handleChange}
                           />
                       </FormControl>
                   </Box>
                   <Box>
                       <FormControl isRequired display="flex" alignItems="center" mb="40px">
                           <FormLabel>Broj osoba:</FormLabel>
-                          <NumberInput defaultValue={1} min={1}>
-                              <NumberInputField />
+                          <NumberInput min={1}>
+                              <NumberInputField name='brojOsoba' 
+                              value={form.brojOsoba} onChange={handleChange}/>
                               <NumberInputStepper>
                                   <NumberIncrementStepper />
                                   <NumberDecrementStepper />
@@ -120,8 +160,9 @@ export default  function Update() {
   
                       <FormControl isRequired mb="40px">
                           <FormLabel>Vrsta stola:</FormLabel>
-                          <RadioGroup>
-                              <Stack direction='column'>
+                          <RadioGroup
+                              value={form.pozicija.toString()} onChange={handlePozicijaChange}>
+                              <Stack direction='column' >
                                   <Radio value='1'>na sredini</Radio>
                                   <Radio value='2'>uz prozor</Radio>
                                   <Radio value='3'>šank</Radio>
@@ -134,8 +175,9 @@ export default  function Update() {
   
                       <FormControl isRequired mb="40px">
                           <FormLabel>Termin rezervacije:</FormLabel>
-                          <RadioGroup>
-                              <Stack direction='column'>
+                          <RadioGroup 
+                              value={form.terminRezervacije.toString()} onChange={handleTerminChange}>
+                              <Stack direction='column' >
                                   <Radio value='1'>10:00 - 11:30</Radio>
                                   <Radio value='2'>11:30 - 13:00</Radio>
                                   <Radio value='3'>13:00 - 14:00</Radio>
@@ -157,5 +199,5 @@ export default  function Update() {
               </Button>
           </Form>
         </Box>
-      )
+      );
 }
