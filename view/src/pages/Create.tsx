@@ -22,14 +22,8 @@ import {
   } from '@chakra-ui/react'
   import axios from "axios";
   import { useEffect, useState } from 'react';
-  import { Form } from 'react-router-dom'
+  import { Form, useNavigate } from 'react-router-dom'
   
-  interface Data {
-    gosti: [],
-    termini: {},
-    pozicije: [],
-    usluzniObjekti: []
-  }
   
   interface FormData {
       idGosta: number,
@@ -40,16 +34,40 @@ import {
       pozicija: number,
       terminRezervacije: number
   }
+
+  interface Gost {
+    imeKorisnika:string,
+    idGosta: number,
+    prezimeKorisnika: string
+  }
+
+  interface Pozicija {
+    idPozicije: number,
+    nazivPozicije: string
+  }
+
+  interface UsluzniObjekti {
+    idObjekta: number,
+    nazivObjekta: string,
+    adresaObjekta: string,
+    gradObjekta: string,
+    termini: Termin[]
+  }
+
+
+  interface Termin {
+    idTermina: number,
+    vrijemePocetka: string,
+    vrijemeZavrsetka: string
+  }
+
   
     export default function Create() {
-      const [data, setData] = useState();
-    //   const [idGosta, setIdGosta] = useState(1);
-    //   const [brojMobitelaGosta, setBrojMobitelaGosta] = useState();
-    //   const [idObjekta, setIdObjekta] = useState();
-    //   const [datumRezervacije, setDatumRezervacije] = useState();
-    //   const [brojOsoba, setBrojOsoba] = useState();
-    //   const [pozicija, setPozicija] = useState();
-    //   const [terminRezervacije, setTerminRezervacije] = useState();
+      const navigate = useNavigate();
+      const [gosti, setGosti] = useState<Gost[]>([]);
+      const [pozicije, setPozicije] = useState<Pozicija[]>([]);
+      const [usluzniObjekti, setUsluzniObjekti] = useState<UsluzniObjekti[]>([]);
+      const [termini, setTermini] = useState<Termin[]>([]);
   
       const [form, setForm] = useState<FormData>({
           idGosta: 1,
@@ -65,17 +83,38 @@ import {
           axios.get('http://localhost:8081/rezervacije').then((response) => {
             // setData(response.data);
             console.log(response.data);
+
+            if (response.data.gosti != undefined)
+                setGosti(response.data.gosti)
+
+            if (response.data.pozicije != undefined)
+                setPozicije(response.data.pozicije)
+
+            if (response.data.usluzniObjekti != undefined) 
+                setUsluzniObjekti(response.data.usluzniObjekti)
+            
+                
+            setTermini(response.data.usluzniObjekti[0].termini)
+            
           });
         }
       
         useEffect(() => {
           fetchData();
         }, []);
-  
-  
+
+
         const handleChange = (e : any) => {
           const {name, value} = e.target;
           setForm({ ...form, [name]: value });
+
+          if (name == "idObjekta") {
+             usluzniObjekti.forEach(objekt => {
+            if (objekt.idObjekta == value) 
+                setTermini(objekt.termini)
+            });
+          }
+          console.log(termini);
         }
   
         const handlePozicijaChange = (value : any) => {
@@ -91,6 +130,7 @@ import {
           console.log(form);
           axios.post('http://localhost:8081/rezervacije', form).then(response => {
              console.log(response)
+             navigate('/');
           }) 
         }
       
@@ -102,8 +142,9 @@ import {
                       <FormControl isRequired mb="40px">
                           <FormLabel>Odaberi gosta:</FormLabel>
                           <Select name='idGosta' value={form.idGosta} onChange={handleChange}>
-                            <option value={1}>Ana Anic</option>
-                            <option value={2}>Pero Peric</option>
+                            {gosti && gosti.map((gost) => (
+                                <option value={gost.idGosta}>{gost.imeKorisnika} {gost.prezimeKorisnika}</option>
+                            ))}
                           </Select>
                       </FormControl>
   
@@ -111,7 +152,7 @@ import {
                           <FormLabel>Broj mobitela:</FormLabel>
                           <InputGroup>
                               <InputLeftAddon children='+385' />
-                              <Input type='tel' placeholder='phone number' name='brojMobitelaGosta' value={form.brojMobitelaGosta} onChange={handleChange}/>
+                              <Input type='tel' placeholder='phone number' maxLength={10} name='brojMobitelaGosta' value={form.brojMobitelaGosta} onChange={handleChange}/>
                           </InputGroup>
                           <FormHelperText>U slučaju promjena u rezervaciji.</FormHelperText>
                       </FormControl>
@@ -119,9 +160,9 @@ import {
                       <FormControl isRequired mb="40px">
                           <FormLabel>Odaberi objekt:</FormLabel>
                           <Select  name='idObjekta' value={form.idObjekta} onChange={handleChange}>
-                              <option value={1}>Boogie Lab Zagreb, Ulica kneza Borne 26, Zagreb</option>
-                              <option value={2}>The Beertija, Ulica Pavla Hatza 16, Zagreb</option>
-                              <option value={3}>Leggiero, Maksimirsko naselje IV 25, Zagreb</option>
+                          {usluzniObjekti && usluzniObjekti.map((objekt) => (
+                                <option value={objekt.idObjekta}>{objekt.nazivObjekta}, {objekt.adresaObjekta}, {objekt.gradObjekta}</option>
+                            ))}
                           </Select>
                       </FormControl>
   
@@ -154,12 +195,9 @@ import {
                           <RadioGroup
                               value={form.pozicija.toString()} onChange={handlePozicijaChange}>
                               <Stack direction='column' >
-                                  <Radio value='1'>na sredini</Radio>
-                                  <Radio value='2'>uz prozor</Radio>
-                                  <Radio value='3'>šank</Radio>
-                                  <Radio value='4'>separe</Radio>
-                                  <Radio value='5'>uz prolaz</Radio>
-                                  <Radio value='6'>terasa</Radio>
+                              {pozicije && pozicije.map((pozicija) => (
+                                <Radio value={pozicija.idPozicije.toString()}>{pozicija.nazivPozicije}</Radio>
+                            ))}
                               </Stack>
                           </RadioGroup>
                       </FormControl>
@@ -169,11 +207,10 @@ import {
                           <RadioGroup 
                               value={form.terminRezervacije.toString()} onChange={handleTerminChange}>
                               <Stack direction='column' >
-                                  <Radio value='1'>10:00 - 11:30</Radio>
-                                  <Radio value='2'>11:30 - 13:00</Radio>
-                                  <Radio value='3'>13:00 - 14:00</Radio>
-                                  <Radio value='4'>14:00 - 15:00</Radio>
-                                  <Radio value='5'>15:00 - 16:30</Radio>
+                              {termini && termini.map((termin) => (
+                                <Radio value={termin.idTermina.toString()}>
+                                    {termin.vrijemePocetka} - {termin.vrijemeZavrsetka}</Radio>
+                            ))}
                               </Stack>
                           </RadioGroup>
                       </FormControl>
