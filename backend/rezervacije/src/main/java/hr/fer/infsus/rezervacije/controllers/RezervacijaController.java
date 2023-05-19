@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import hr.fer.infsus.rezervacije.models.FormDataRezervacije;
@@ -36,7 +35,7 @@ import hr.fer.infsus.rezervacije.services.UsluzniObjektService;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequestMapping("/rezervacije")
+@RequestMapping(value = "/rezervacije", produces = MediaType.APPLICATION_JSON_VALUE)
 public class RezervacijaController {
 	@Autowired
 	private GostService gostService;
@@ -102,10 +101,9 @@ public class RezervacijaController {
 				.body(formData.toSingleValueMap());
 	}
 
-	@PostMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-	public ResponseEntity<?> createReservation(@RequestBody MultiValueMap<String, String> formData) {
+	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> createReservation(@RequestBody ReservationData data) {
 		try {
-			ReservationData data = rezervacijaService.extractReservationData(formData);
 			Rezervacija rez = rezervacijaService.createRezervacija(data);
 			rez = rezervacijaService.saveRezervacija(rez);
 
@@ -117,11 +115,10 @@ public class RezervacijaController {
 		}
 	}
 
-	@PutMapping("/{id}")
+	@PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> updateReservation(@PathVariable Long id,
-			@RequestParam MultiValueMap<String, String> formData) {
+			@RequestBody  ReservationData data) {
 		try {
-			ReservationData data = rezervacijaService.extractReservationData(formData);
 			Rezervacija existingReservation = rezervacijaService.getRezervacijaById(id);
 
 			if (existingReservation == null) {

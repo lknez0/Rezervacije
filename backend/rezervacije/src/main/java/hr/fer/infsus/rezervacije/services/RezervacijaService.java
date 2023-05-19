@@ -97,10 +97,11 @@ public class RezervacijaService {
 	}
 	
 	 public Rezervacija createRezervacija(ReservationData data) {
-	        Stol stol = stolService.getAvailableStol(data.getIdTermina(), data.getIdPozicije(),
+		 
+	        Stol stol = stolService.getAvailableStol(data.getTerminRezervacije(), data.getPozicija(),
 	                data.getDatumRezervacije(), data.getBrojOsoba());
 	        UsluzniObjekt usluzniObjekt = usluzniObjektService.getById(data.getIdObjekta());
-	        Termin termin = terminService.getById(data.getIdTermina());
+	        Termin termin = terminService.getById(data.getTerminRezervacije());
 	        Gost gost = gostService.updateNumberIfNeeded(data.getIdGosta(), data.getBrojMobitelaGosta());
 
 	        return createRezervacija(data, stol, termin, gost, usluzniObjekt);
@@ -138,8 +139,8 @@ public class RezervacijaService {
 
 		 
 		 data.setIdGosta(Long.parseLong(formData.getFirst("id_gosta")));
-		 data.setIdPozicije(Long.parseLong(formData.getFirst("vrsta_stola")));
-		 data.setIdTermina(Long.parseLong(formData.getFirst("termin_rezervacija")));
+		 data.setPozicija(Long.parseLong(formData.getFirst("vrsta_stola")));
+		 data.setTerminRezervacijea(Long.parseLong(formData.getFirst("termin_rezervacija")));
 		 data.setIdObjekta(Long.parseLong(formData.getFirst("id_objekta")));
 		 
 		 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy.");
@@ -153,8 +154,8 @@ public class RezervacijaService {
 	
 	public boolean requiresNewRezervacija(Rezervacija existingReservation, ReservationData updateData) {
 	    Long idGosta = updateData.getIdGosta();
-	    Long idPozicije = updateData.getIdPozicije();
-	    Long idTermina = updateData.getIdTermina();
+	    Long idPozicije = updateData.getPozicija();
+	    Long idTermina = updateData.getTerminRezervacije();
 	    int brojOsoba = updateData.getBrojOsoba();
 
 	    return !idGosta.equals(existingReservation.getGost().getIdGosta())

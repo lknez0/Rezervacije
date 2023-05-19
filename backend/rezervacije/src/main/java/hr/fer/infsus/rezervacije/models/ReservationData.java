@@ -4,8 +4,8 @@ import java.time.LocalDate;
 
 public class ReservationData {
     private Long idGosta;
-    private Long idPozicije;
-    private Long idTermina;
+    private Long pozicija;
+    private Long terminRezervacije;
     private Long idObjekta;
     private LocalDate datumRezervacije;
     private int brojOsoba;
@@ -15,10 +15,10 @@ public class ReservationData {
     public ReservationData() {
     }
 
-    public ReservationData(Long idGosta, Long idPozicije, Long idTermina, Long idObjekta, LocalDate datumRezervacije, int brojOsoba, String brojMobitelaGosta) {
+    public ReservationData(Long idGosta, Long pozicija, Long terminRezervacije, Long idObjekta, LocalDate datumRezervacije, int brojOsoba, String brojMobitelaGosta) {
         this.idGosta = idGosta;
-        this.idPozicije = idPozicije;
-        this.idTermina = idTermina;
+        this.pozicija = pozicija;
+        this.terminRezervacije = terminRezervacije;
         this.idObjekta = idObjekta;
         this.datumRezervacije = datumRezervacije;
         this.brojOsoba = brojOsoba;
@@ -33,20 +33,20 @@ public class ReservationData {
         this.idGosta = idGosta;
     }
 
-    public Long getIdPozicije() {
-        return idPozicije;
+    public Long getPozicija() {
+        return pozicija;
     }
 
-    public void setIdPozicije(Long idPozicije) {
-        this.idPozicije = idPozicije;
+    public void setPozicija(Long pozicija) {
+        this.pozicija = pozicija;
     }
 
-    public Long getIdTermina() {
-        return idTermina;
+    public Long getTerminRezervacije() {
+        return terminRezervacije;
     }
 
-    public void setIdTermina(Long idTermina) {
-        this.idTermina = idTermina;
+    public void setTerminRezervacijea(Long terminRezervacije) {
+        this.terminRezervacije = terminRezervacije;
     }
 
     public Long getIdObjekta() {
