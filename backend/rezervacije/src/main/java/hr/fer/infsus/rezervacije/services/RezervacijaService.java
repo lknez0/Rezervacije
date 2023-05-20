@@ -103,6 +103,10 @@ public class RezervacijaService {
 	        UsluzniObjekt usluzniObjekt = usluzniObjektService.getById(data.getIdObjekta());
 	        Termin termin = terminService.getById(data.getTerminRezervacije());
 	        Gost gost = gostService.updateNumberIfNeeded(data.getIdGosta(), data.getBrojMobitelaGosta());
+	        
+	        if(!termin.getUsluzniObjekt().getIdObjekta().equals(usluzniObjekt.getIdObjekta())) {
+	        	throw new IllegalArgumentException("Odabrani termin nije dostupan u objektu");
+	        }
 
 	        return createRezervacija(data, stol, termin, gost, usluzniObjekt);
 	    }
@@ -140,7 +144,7 @@ public class RezervacijaService {
 		 
 		 data.setIdGosta(Long.parseLong(formData.getFirst("id_gosta")));
 		 data.setPozicija(Long.parseLong(formData.getFirst("vrsta_stola")));
-		 data.setTerminRezervacije(Long.parseLong(formData.getFirst("termin_rezervacija")));
+		 data.setTerminRezervacije(Long.parseLong(formData.getFirst("termin_rezervacije")));
 		 data.setIdObjekta(Long.parseLong(formData.getFirst("id_objekta")));
 		 
 		 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy.");
