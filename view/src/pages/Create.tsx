@@ -128,7 +128,11 @@ import {
         const handleSubmit = async(e : any) => {
           e.preventDefault();
           console.log( JSON.stringify(form));
-          axios.post('http://localhost:8081/rezervacije', JSON.stringify(form)).then(response => {
+          const data = new FormData();
+          data.append('data', new Blob([JSON.stringify(form)], { type: 'application/json'}));
+          axios.post('http://localhost:8081/rezervacije', data, {headers: {
+            "Content-Type": "application/json"}
+          }).then(response => {
              console.log(response)
              navigate('/');
           }) 

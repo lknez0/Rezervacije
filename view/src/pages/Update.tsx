@@ -137,13 +137,14 @@ export default  function Update() {
       const handleSubmit = async(e : any) => {
         e.preventDefault();
         console.log(JSON.stringify(form));
-        axios.put('http://localhost:8081/rezervacije/' + id, JSON.stringify(form)).then(response => {
+        const data = new FormData();
+        data.append('data', new Blob([JSON.stringify(form)], { type: 'application/json'}));
+        axios.put('http://localhost:8081/rezervacije/' + id, data, {headers: {
+          "Content-Type": "application/json"}
+        }).then(response => {
            console.log(response);
            navigate('/');
-        }).catch((response) => {
-          console.log("error")
-          console.log(response);
-        }) 
+        })
       }
   
 

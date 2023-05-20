@@ -1,4 +1,4 @@
-package hr.fer.infsus.rezervacije.controllers;
+package hr.fer.infsus.rezervacije.config;
 
 import java.io.IOException;
 
