@@ -268,9 +268,10 @@ class RezervacijaControllerTest {
 		t1.setVrijemeZavrsetka("11:30");
 
 		Termin t2 = new Termin();
-		t1.setIdTermina(2L);
-		t1.setVrijemePocetka("13:00");
-		t1.setVrijemeZavrsetka("14:30");
+		t2.setIdTermina(2L);
+		t2.setVrijemePocetka("13:00");
+		t2.setVrijemeZavrsetka("14:30");
+
 
 		return List.of(t1, t2);
 	}
