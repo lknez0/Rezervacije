@@ -18,7 +18,8 @@ import {
     RadioGroup,
     Select,
     Stack,
-    Textarea
+    Textarea,
+    useToast
   } from '@chakra-ui/react'
   import axios from "axios";
   import { useEffect, useState } from 'react';
@@ -64,6 +65,7 @@ import {
   
     export default function Create() {
       const navigate = useNavigate();
+      const toast = useToast();
       const [gosti, setGosti] = useState<Gost[]>([]);
       const [pozicije, setPozicije] = useState<Pozicija[]>([]);
       const [usluzniObjekti, setUsluzniObjekti] = useState<UsluzniObjekti[]>([]);
@@ -107,14 +109,20 @@ import {
         const handleChange = (e : any) => {
           const {name, value} = e.target;
           setForm({ ...form, [name]: value });
-
+        }
+  
+        const handleInputChange = (e : any) => {
+          const {name, value} = e.target;
+  
+          setForm({ ...form, [name]: parseInt(value) });
+  
           if (name == "idObjekta") {
-             usluzniObjekti.forEach(objekt => {
+            usluzniObjekti.forEach(objekt => {
             if (objekt.idObjekta == value) 
-                setTermini(objekt.termini)
-            });
-          }
-          console.log(termini);
+                 setTermini(objekt.termini)
+             });
+           }
+           console.log(termini);
         }
   
         const handlePozicijaChange = (value : any) => {
@@ -127,7 +135,7 @@ import {
   
         const handleSubmit = async(e : any) => {
           e.preventDefault();
-          console.log( JSON.stringify(form));
+          console.log( form );
           const data = new FormData();
           data.append('data', new Blob([JSON.stringify(form)], { type: 'application/json'}));
           axios.post('http://localhost:8081/rezervacije', data, {headers: {
@@ -135,7 +143,16 @@ import {
           }).then(response => {
              console.log(response)
              navigate('/');
-          }) 
+          }).catch(res => {
+            console.log(res);
+            toast({
+              title: 'Pogreška pri kreiranju rezervacije',
+              description: res.data,
+              status: 'error',
+              duration: 9000,
+              isClosable: true
+            });
+          }); 
         }
       
       return (
@@ -145,9 +162,9 @@ import {
                   <Box>
                       <FormControl isRequired mb="40px">
                           <FormLabel>Odaberi gosta:</FormLabel>
-                          <Select name='idGosta' value={form.idGosta} onChange={handleChange}>
+                          <Select name='idGosta' value={form.idGosta} onChange={handleInputChange}>
                             {gosti && gosti.map((gost) => (
-                                <option value={gost.idGosta}>{gost.imeKorisnika} {gost.prezimeKorisnika}</option>
+                                <option key={gost.idGosta} value={gost.idGosta}>{gost.imeKorisnika} {gost.prezimeKorisnika}</option>
                             ))}
                           </Select>
                       </FormControl>
@@ -163,9 +180,9 @@ import {
   
                       <FormControl isRequired mb="40px">
                           <FormLabel>Odaberi objekt:</FormLabel>
-                          <Select  name='idObjekta' value={form.idObjekta} onChange={handleChange}>
+                          <Select  name='idObjekta' value={form.idObjekta} onChange={handleInputChange}>
                           {usluzniObjekti && usluzniObjekti.map((objekt) => (
-                                <option value={objekt.idObjekta}>{objekt.nazivObjekta}, {objekt.adresaObjekta}, {objekt.gradObjekta}</option>
+                                <option key={objekt.idObjekta} value={objekt.idObjekta}>{objekt.nazivObjekta}, {objekt.adresaObjekta}, {objekt.gradObjekta}</option>
                             ))}
                           </Select>
                       </FormControl>
