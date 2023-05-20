@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -87,18 +85,12 @@ public class RezervacijaController {
 		if(rez == null) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Reservation not found");
 		}
+		
 
-		MultiValueMap<String, Object> formData = new LinkedMultiValueMap<>();
-		formData.add("idGosta", rez.getGost().getIdGosta());
-		formData.add("brojMobitelaGosta", rez.getGost().getBrojMobitela());
-		formData.add("idObjekta", rez.getUsluzniObjekt().getIdObjekta());
-		formData.add("datumRezervacije", rez.getDatumRezervacije());
-		formData.add("brojOsoba", rez.getBrojOsoba());
-		formData.add("pozicija", rez.getStol().getPozicija().getIdPozicije());
-		formData.add("terminRezervacije", rez.getTermin().getIdTermina());
+		ReservationData data = rezervacijaService.buildFormDataFromRezervacija(rez);
 
 		return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
-				.body(formData.toSingleValueMap());
+				.body(data);
 	}
 
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)

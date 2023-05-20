@@ -156,6 +156,20 @@ public class RezervacijaService {
 		 return data;
 	}
 	
+	public ReservationData buildFormDataFromRezervacija(Rezervacija rez) {
+		ReservationData formData = new ReservationData();
+		
+		formData.setIdGosta(rez.getGost().getIdGosta());
+		formData.setBrojMobitelaGosta(rez.getGost().getBrojMobitela());
+		formData.setIdObjekta(rez.getUsluzniObjekt().getIdObjekta());
+		formData.setDatumRezervacije(rez.getDatumRezervacije());
+		formData.setBrojOsoba(rez.getBrojOsoba());
+		formData.setPozicija(rez.getStol().getPozicija().getIdPozicije());
+		formData.setTerminRezervacije(rez.getTermin().getIdTermina());
+		
+		return formData;
+	}
+	
 	public boolean requiresNewRezervacija(Rezervacija existingReservation, ReservationData updateData) {
 	    Long idGosta = updateData.getIdGosta();
 	    Long idPozicije = updateData.getPozicija();
