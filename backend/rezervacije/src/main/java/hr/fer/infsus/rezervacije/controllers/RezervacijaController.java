@@ -95,7 +95,7 @@ public class RezervacijaController {
 		formData.add("datumRezervacije", rez.getDatumRezervacije());
 		formData.add("brojOsoba", rez.getBrojOsoba());
 		formData.add("pozicija", rez.getStol().getPozicija().getIdPozicije());
-		formData.add("terminRezervacija", rez.getTermin().getIdTermina());
+		formData.add("terminRezervacije", rez.getTermin().getIdTermina());
 
 		return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
 				.body(formData.toSingleValueMap());
