@@ -14,10 +14,10 @@ import hr.fer.infsus.rezervacije.models.Stol;
 public interface StolRepository extends JpaRepository<Stol, Long> {
 
 	@Query("SELECT s FROM Stol s WHERE s.idStola NOT IN " +
-	           "(SELECT r.stol.idStola FROM Rezervacija r " +
-	           "WHERE r.termin.idTermina = :terminId " +
-	           "AND r.datumRezervacije = :datumRezervacije) " +
-	           "AND s.pozicija.idPozicije = :idPozicije")
+		       "(SELECT r.stol.idStola FROM Rezervacija r " +
+		       "WHERE r.termin.idTermina = :terminId " +
+		       "AND r.datumRezervacije = :datumRezervacije) " +
+		       "AND s.pozicija.idPozicije = :idPozicije")
 	    List<Stol> findAvailableStolByTerminAndDatumRezervacijeAndPozicija(
 	            @Param("terminId") Long terminId,
 	            @Param("datumRezervacije") LocalDate datumRezervacije,

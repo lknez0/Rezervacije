@@ -126,6 +126,7 @@ public class RezervacijaController {
 			}
 
 			if (rezervacijaService.requiresNewRezervacija(existingReservation, data)) {
+				rezervacijaService.deleteRezervacijaById(id);
 				Rezervacija rez = rezervacijaService.createRezervacija(data);
 				rez = rezervacijaService.saveRezervacija(rez);
 
