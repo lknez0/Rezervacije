@@ -140,7 +140,7 @@ public class RezervacijaService {
 		 
 		 data.setIdGosta(Long.parseLong(formData.getFirst("id_gosta")));
 		 data.setPozicija(Long.parseLong(formData.getFirst("vrsta_stola")));
-		 data.setTerminRezervacijea(Long.parseLong(formData.getFirst("termin_rezervacija")));
+		 data.setTerminRezervacije(Long.parseLong(formData.getFirst("termin_rezervacija")));
 		 data.setIdObjekta(Long.parseLong(formData.getFirst("id_objekta")));
 		 
 		 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy.");

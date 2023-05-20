@@ -45,7 +45,7 @@ public class ReservationData {
         return terminRezervacije;
     }
 
-    public void setTerminRezervacijea(Long terminRezervacije) {
+    public void setTerminRezervacije(Long terminRezervacije) {
         this.terminRezervacije = terminRezervacije;
     }
 
