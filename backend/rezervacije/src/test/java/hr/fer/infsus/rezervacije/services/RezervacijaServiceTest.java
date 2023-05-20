@@ -146,7 +146,7 @@ class RezervacijaServiceTest {
 	@Test
 	void testRequiresNewRezervacijaFalse() {
 		Rezervacija rezervacija = buildRezervacija();
-		ReservationData data = new ReservationData(1L, 1L, 1L, null, null, 1, null);
+		ReservationData data = new ReservationData(1L, 1L, 1L, null, LocalDate.of(2023, 1, 1), 1, null);
 
 		boolean requiresNew = rezervacijaService.requiresNewRezervacija(rezervacija, data);
 

@@ -165,7 +165,8 @@ public class RezervacijaService {
 	    return !idGosta.equals(existingReservation.getGost().getIdGosta())
 	        || !idTermina.equals(existingReservation.getTermin().getIdTermina())
 	        || !idPozicije.equals(existingReservation.getStol().getPozicija().getIdPozicije())
-	        || brojOsoba > existingReservation.getStol().getBrojStolica();
+	        || brojOsoba > existingReservation.getStol().getBrojStolica()
+	        || !updateData.getDatumRezervacije().equals(existingReservation.getDatumRezervacije());
 	}
 
 	
