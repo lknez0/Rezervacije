@@ -72,13 +72,13 @@ import {
       const [termini, setTermini] = useState<Termin[]>([]);
   
       const [form, setForm] = useState<FormData>({
-          idGosta: 1,
+          idGosta: 0,
           brojMobitelaGosta: '',
-          idObjekta: 1,
+          idObjekta: 0,
           datumRezervacije: '',
           brojOsoba: 1,
-          pozicija: 1,
-          terminRezervacije: 1
+          pozicija: 0,
+          terminRezervacije: 0
       })
   
       const fetchData =() => {
@@ -125,6 +125,9 @@ import {
            console.log(termini);
         }
   
+        const handleStoliceChange = (value : any) => {
+          setForm({ ...form, ['brojOsoba']: parseInt(value)});
+        }
         const handlePozicijaChange = (value : any) => {
           setForm({ ...form, ['pozicija']: parseInt(value)});
         }
@@ -136,9 +139,7 @@ import {
         const handleSubmit = async(e : any) => {
           e.preventDefault();
           console.log( form );
-          const data = new FormData();
-          data.append('data', new Blob([JSON.stringify(form)], { type: 'application/json'}));
-          axios.post('http://localhost:8081/rezervacije', data, {headers: {
+          axios.post('http://localhost:8081/rezervacije', form, {headers: {
             "Content-Type": "application/json"}
           }).then(response => {
              console.log(response)
@@ -162,7 +163,7 @@ import {
                   <Box>
                       <FormControl isRequired mb="40px">
                           <FormLabel>Odaberi gosta:</FormLabel>
-                          <Select name='idGosta' value={form.idGosta} onChange={handleInputChange}>
+                          <Select name='idGosta' placeholder='Odaberi' onChange={handleInputChange}>
                             {gosti && gosti.map((gost) => (
                                 <option key={gost.idGosta} value={gost.idGosta}>{gost.imeKorisnika} {gost.prezimeKorisnika}</option>
                             ))}
@@ -180,7 +181,7 @@ import {
   
                       <FormControl isRequired mb="40px">
                           <FormLabel>Odaberi objekt:</FormLabel>
-                          <Select  name='idObjekta' value={form.idObjekta} onChange={handleInputChange}>
+                          <Select  name='idObjekta' placeholder='Odaberi' onChange={handleInputChange}>
                           {usluzniObjekti && usluzniObjekti.map((objekt) => (
                                 <option key={objekt.idObjekta} value={objekt.idObjekta}>{objekt.nazivObjekta}, {objekt.adresaObjekta}, {objekt.gradObjekta}</option>
                             ))}
@@ -201,9 +202,8 @@ import {
                   <Box>
                       <FormControl isRequired display="flex" alignItems="center" mb="40px">
                           <FormLabel>Broj osoba:</FormLabel>
-                          <NumberInput min={1}>
-                              <NumberInputField name='brojOsoba' 
-                              value={form.brojOsoba} onChange={handleChange}/>
+                          <NumberInput min={1} defaultValue={form.brojOsoba} onChange={handleStoliceChange}>
+                              <NumberInputField />
                               <NumberInputStepper>
                                   <NumberIncrementStepper />
                                   <NumberDecrementStepper />

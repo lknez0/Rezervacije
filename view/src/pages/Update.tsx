@@ -59,13 +59,14 @@ interface FormData {
     datumRezervacije: string,
     brojOsoba: number,
     pozicija: number,
-    terminRezervacija: number
+    terminRezervacije: number
 }
 
 
 export default  function Update() {
     const navigate = useNavigate();
     const toast = useToast();
+    const [temp, setTemp] = useState<Termin[]>([]);
     const [gosti, setGosti] = useState<Gost[]>([]);
     const [pozicije, setPozicije] = useState<Pozicija[]>([]);
     const [usluzniObjekti, setUsluzniObjekti] = useState<UsluzniObjekti[]>([]);
@@ -77,22 +78,23 @@ export default  function Update() {
         datumRezervacije: '',
         brojOsoba: 1,
         pozicija: 1,
-        terminRezervacija: 1
+        terminRezervacije: 1
     })
     
     const {state} = useLocation();
     const { id } = state;
 
-    const fetchRezervacija =() => {
-        axios.get('http://localhost:8081/rezervacije/' + id).then((response) => {
+    const fetchRezervacija = async() => {
+        await axios.get('http://localhost:8081/rezervacije/' + id).then((response) => {
           console.log(response.data);
-          if (response.data != undefined)
+          if (response.data != undefined) 
             setForm(response.data);
+
         });
       }
 
-    const fetchData =() => {
-        axios.get('http://localhost:8081/rezervacije').then((response) => {
+    const fetchData = async() => {
+        await axios.get('http://localhost:8081/rezervacije').then((response) => {
         console.log(response.data);
           
         if (response.data.gosti != undefined)
@@ -104,9 +106,9 @@ export default  function Update() {
         if (response.data.usluzniObjekti != undefined) 
             setUsluzniObjekti(response.data.usluzniObjekti)
         
-            
-        setTermini(response.data.usluzniObjekti[0].termini)
-        });
+        })
+
+       
       }
     
       useEffect(() => {
@@ -114,6 +116,13 @@ export default  function Update() {
         fetchRezervacija();
         fetchData();
       }, []);
+
+      useEffect(() => {
+        usluzniObjekti.forEach((objekt) => {
+          if (objekt.idObjekta == form.idObjekta)
+            setTermini(objekt.termini);
+        })
+      }, [form, usluzniObjekti]);
 
       const handleChange = (e : any) => {
         const {name, value} = e.target;
@@ -134,20 +143,22 @@ export default  function Update() {
          console.log(termini);
       }
 
+      const handleStoliceChange = (value : any) => {
+        setForm({ ...form, ['brojOsoba']: parseInt(value)});
+      }
+
       const handlePozicijaChange = (value : any) => {
         setForm({ ...form, ['pozicija']: parseInt(value)});
       }
 
       const handleTerminChange = (value : any) => {
-        setForm({ ...form, ['terminRezervacija']: parseInt(value)});
+        setForm({ ...form, ['terminRezervacije']: parseInt(value)});
       }
 
       const handleSubmit = async(e : any) => {
         e.preventDefault();
         console.log(form);
-        const data = new FormData();
-        data.append('data', new Blob([JSON.stringify(form)], { type: 'application/json'}));
-        axios.put('http://localhost:8081/rezervacije/' + id, data, {headers: {
+        axios.put('http://localhost:8081/rezervacije/' + id, form, {headers: {
           "Content-Type": "application/json"}
         }).then(response => {
            console.log(response);
@@ -211,9 +222,8 @@ export default  function Update() {
                   <Box>
                       <FormControl isRequired display="flex" alignItems="center" mb="40px">
                           <FormLabel>Broj osoba:</FormLabel>
-                          <NumberInput min={1} defaultValue={form.brojOsoba}>
-                              <NumberInputField name='brojOsoba' 
-                              value={form.brojOsoba} onChange={handleChange}/>
+                          <NumberInput min={1} defaultValue={form.brojOsoba} onChange={handleStoliceChange}>
+                              <NumberInputField />
                               <NumberInputStepper>
                                   <NumberIncrementStepper />
                                   <NumberDecrementStepper />
@@ -236,7 +246,7 @@ export default  function Update() {
                       <FormControl isRequired mb="40px">
                           <FormLabel>Termin rezervacije:</FormLabel>
                           <RadioGroup 
-                              value={form.terminRezervacija.toString()} onChange={handleTerminChange}>
+                              value={form.terminRezervacije.toString()} onChange={handleTerminChange}>
                               <Stack direction='column' >
                               {termini && termini.map((termin) => (
                                 <Radio value={termin.idTermina.toString()}>

@@ -36,7 +36,7 @@ import hr.fer.infsus.rezervacije.services.UsluzniObjektService;
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping(value = "/rezervacije", produces = MediaType.APPLICATION_JSON_VALUE)
-public class RezervacijaController {
+public class RezervacijaController {	
 	@Autowired
 	private GostService gostService;
 	@Autowired
@@ -95,7 +95,7 @@ public class RezervacijaController {
 		formData.add("datumRezervacije", rez.getDatumRezervacije());
 		formData.add("brojOsoba", rez.getBrojOsoba());
 		formData.add("pozicija", rez.getStol().getPozicija().getIdPozicije());
-		formData.add("terminRezervacija", rez.getTermin().getIdTermina());
+		formData.add("terminRezervacije", rez.getTermin().getIdTermina());
 
 		return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON)
 				.body(formData.toSingleValueMap());
