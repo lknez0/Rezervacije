@@ -1,0 +1,399 @@
+{
+  "id": "5b55f1b7-c4f1-4fc4-b8a9-aa7813b4d172",
+  "version": "2.0",
+  "name": "rezervacije",
+  "url": "http://localhost:3000",
+  "tests": [{
+    "id": "2edace3b-18f5-4e52-b2f0-6befda814388",
+    "name": "Create",
+    "commands": [{
+      "id": "f14f1445-c07d-4174-9068-938cf6fb9310",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "8bafa9fd-ae1e-4d2a-bbf6-44b3d7953f8a",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "550x692",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "d0283241-3639-4b75-9f54-786b7f759885",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=Nova rezervacija",
+      "targets": [
+        ["linkText=Nova rezervacija", "linkText"],
+        ["css=.css-0:nth-child(2) > a", "css:finder"],
+        ["xpath=//a[contains(text(),'Nova rezervacija')]", "xpath:link"],
+        ["xpath=//div[@id='root']/div/aside/ul/li[2]/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, '/create')]", "xpath:href"],
+        ["xpath=//li[2]/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Nova rezervacija')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "97fb64e4-28b7-4f48-8715-4714d1b0ccf3",
+      "comment": "",
+      "command": "click",
+      "target": "id=field-:r1:",
+      "targets": [
+        ["id=field-:r1:", "id"],
+        ["name=idGosta", "name"],
+        ["css=#field-\\3Ar1\\3A", "css:finder"],
+        ["xpath=//select[@id='field-:r1:']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/main/div/form/div/div/div/div/select", "xpath:idRelative"],
+        ["xpath=//select", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "a4ca5b21-d168-4ed4-9978-b28d87b48493",
+      "comment": "",
+      "command": "select",
+      "target": "id=field-:r1:",
+      "targets": [],
+      "value": "label=Ana Anić"
+    }, {
+      "id": "45f7c5f8-3a8c-4558-b9b7-e4cf8515dc7a",
+      "comment": "",
+      "command": "click",
+      "target": "css=#field-\\3Ar1\\3A > option:nth-child(2)",
+      "targets": [
+        ["css=#field-\\3Ar1\\3A > option:nth-child(2)", "css:finder"],
+        ["xpath=//option[@value='2']", "xpath:attributes"],
+        ["xpath=//select[@id='field-:r1:']/option[2]", "xpath:idRelative"],
+        ["xpath=//option[2]", "xpath:position"],
+        ["xpath=//option[contains(.,'Ana Anić')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "67126cc6-daec-4c94-90b9-0fbde738bb43",
+      "comment": "",
+      "command": "click",
+      "target": "id=field-:r3:",
+      "targets": [
+        ["id=field-:r3:", "id"],
+        ["name=brojMobitelaGosta", "name"],
+        ["css=#field-\\3Ar3\\3A", "css:finder"],
+        ["xpath=//input[@id='field-:r3:']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/main/div/form/div/div/div[2]/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "514bf552-9c97-40b1-9fc2-721d21de970d",
+      "comment": "",
+      "command": "type",
+      "target": "id=field-:r3:",
+      "targets": [
+        ["id=field-:r3:", "id"],
+        ["name=brojMobitelaGosta", "name"],
+        ["css=#field-\\3Ar3\\3A", "css:finder"],
+        ["xpath=//input[@id='field-:r3:']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/main/div/form/div/div/div[2]/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "123 456"
+    }, {
+      "id": "f6fc5ac9-cc4c-4722-9c87-52cf26c7dffd",
+      "comment": "",
+      "command": "click",
+      "target": "id=field-:r5:",
+      "targets": [
+        ["id=field-:r5:", "id"],
+        ["name=idObjekta", "name"],
+        ["css=#field-\\3Ar5\\3A", "css:finder"],
+        ["xpath=//select[@id='field-:r5:']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/main/div/form/div/div/div[3]/div/select", "xpath:idRelative"],
+        ["xpath=//div[3]/div/select", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "e16feb8f-2122-4a88-ab4e-58cde37ab291",
+      "comment": "",
+      "command": "select",
+      "target": "id=field-:r5:",
+      "targets": [],
+      "value": "label=The Beertija, Ulica Pavla Hatza 16, Zagreb"
+    }, {
+      "id": "92c95904-1ac3-41c9-b543-4ddee04d529a",
+      "comment": "",
+      "command": "click",
+      "target": "css=#field-\\3Ar5\\3A > option:nth-child(3)",
+      "targets": [
+        ["css=#field-\\3Ar5\\3A > option:nth-child(3)", "css:finder"],
+        ["xpath=(//option[@value='2'])[2]", "xpath:attributes"],
+        ["xpath=//select[@id='field-:r5:']/option[3]", "xpath:idRelative"],
+        ["xpath=//div[3]/div/select/option[3]", "xpath:position"],
+        ["xpath=//option[contains(.,'The Beertija, Ulica Pavla Hatza 16, Zagreb')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "6a2f0ed9-dd82-4fd7-a272-73e9868a0967",
+      "comment": "",
+      "command": "click",
+      "target": "id=field-:r7:",
+      "targets": [
+        ["id=field-:r7:", "id"],
+        ["name=datumRezervacije", "name"],
+        ["css=#field-\\3Ar7\\3A", "css:finder"],
+        ["xpath=//input[@id='field-:r7:']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/main/div/form/div/div/div[4]/input", "xpath:idRelative"],
+        ["xpath=//div[4]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "5287fa3f-5ee0-4d40-9bc2-eeb53f40287e",
+      "comment": "",
+      "command": "type",
+      "target": "id=field-:r7:",
+      "targets": [
+        ["id=field-:r7:", "id"],
+        ["name=datumRezervacije", "name"],
+        ["css=#field-\\3Ar7\\3A", "css:finder"],
+        ["xpath=//input[@id='field-:r7:']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/main/div/form/div/div/div[4]/input", "xpath:idRelative"],
+        ["xpath=//div[4]/input", "xpath:position"]
+      ],
+      "value": "2023-05-10"
+    }, {
+      "id": "e3a3bc3c-4a0a-4edf-8a78-917c4ce5de1c",
+      "comment": "",
+      "command": "click",
+      "target": "css=.chakra-form-control:nth-child(2) .chakra-radio:nth-child(2) > .chakra-radio__control",
+      "targets": [
+        ["css=.chakra-form-control:nth-child(2) .chakra-radio:nth-child(2) > .chakra-radio__control", "css:finder"],
+        ["xpath=//div[@id='root']/div/main/div/form/div/div[2]/div[2]/div/div/label[2]/span", "xpath:idRelative"],
+        ["xpath=//label[2]/span", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "a28c0d59-f48a-412c-acef-24d427c88244",
+      "comment": "",
+      "command": "click",
+      "target": "css=.chakra-form-control:nth-child(3) .chakra-radio:nth-child(3) > .chakra-radio__control",
+      "targets": [
+        ["css=.chakra-form-control:nth-child(3) .chakra-radio:nth-child(3) > .chakra-radio__control", "css:finder"],
+        ["xpath=//div[@id='root']/div/main/div/form/div/div[2]/div[3]/div/div/label[3]/span", "xpath:idRelative"],
+        ["xpath=//div[3]/div/div/label[3]/span", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "de9bc155-ee38-470e-97a4-bd3791226187",
+      "comment": "",
+      "command": "click",
+      "target": "css=.chakra-button",
+      "targets": [
+        ["css=.chakra-button", "css:finder"],
+        ["xpath=//button[@type='submit']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/main/div/form/button", "xpath:idRelative"],
+        ["xpath=//button", "xpath:position"],
+        ["xpath=//button[contains(.,'submit')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }]
+  }, {
+    "id": "91d8700f-4abf-4799-b498-c659f52c2d28",
+    "name": "Delete",
+    "commands": [{
+      "id": "1ae085bc-add1-41ce-9365-11e8401f3646",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "6d3e8dc6-3838-4dfa-9cb6-eacd7bc56037",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1142x692",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "95e4c79b-3374-4ca3-903e-cb71e623a98c",
+      "comment": "",
+      "command": "click",
+      "target": "css=.chakra-card:nth-child(3) .chakra-button:nth-child(1)",
+      "targets": [
+        ["css=.chakra-card:nth-child(3) .chakra-button:nth-child(1)", "css:finder"],
+        ["xpath=(//button[@type='button'])[5]", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/main/div/div[3]/div[3]/div/button", "xpath:idRelative"],
+        ["xpath=//div[3]/div[3]/div/button", "xpath:position"]
+      ],
+      "value": ""
+    }]
+  }, {
+    "id": "72d21d05-9ce7-43cc-9c9e-055af4a314b2",
+    "name": "Update",
+    "commands": [{
+      "id": "4b209d54-9e77-4230-a5fd-5f79be1a5c3f",
+      "comment": "",
+      "command": "open",
+      "target": "/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "d849f8fd-6b9c-4322-ad89-bfc63c4a74f4",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1550x830",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "44e1bfff-e77d-42bf-8e24-037d7cbee596",
+      "comment": "",
+      "command": "click",
+      "target": "css=.chakra-card:nth-child(4) path:nth-child(2)",
+      "targets": [
+        ["css=.chakra-card:nth-child(4) path:nth-child(2)", "css:finder"]
+      ],
+      "value": ""
+    }, {
+      "id": "6253f36a-9d75-49ac-84f8-dd2c1ef12a81",
+      "comment": "",
+      "command": "click",
+      "target": "id=field-:r3:",
+      "targets": [
+        ["id=field-:r3:", "id"],
+        ["name=brojMobitelaGosta", "name"],
+        ["css=#field-\\3Ar3\\3A", "css:finder"],
+        ["xpath=//input[@id='field-:r3:']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/main/div/form/div/div/div[2]/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "d409ff8a-bf79-46d3-9dfd-7f0057a528fa",
+      "comment": "",
+      "command": "type",
+      "target": "id=field-:r3:",
+      "targets": [
+        ["id=field-:r3:", "id"],
+        ["name=brojMobitelaGosta", "name"],
+        ["css=#field-\\3Ar3\\3A", "css:finder"],
+        ["xpath=//input[@id='field-:r3:']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/main/div/form/div/div/div[2]/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "123 456 12"
+    }, {
+      "id": "fcfd5eef-3b8f-482e-8160-0135951e8561",
+      "comment": "",
+      "command": "click",
+      "target": "css=.css-c4kkdl",
+      "targets": [
+        ["css=.css-c4kkdl", "css:finder"],
+        ["xpath=//div[@id='root']/div/main/div/form/div", "xpath:idRelative"],
+        ["xpath=//form/div", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "6563c1b6-fb73-4540-8fdb-192094d6ab70",
+      "comment": "",
+      "command": "click",
+      "target": "id=field-:r5:",
+      "targets": [
+        ["id=field-:r5:", "id"],
+        ["name=idObjekta", "name"],
+        ["css=#field-\\3Ar5\\3A", "css:finder"],
+        ["xpath=//select[@id='field-:r5:']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/main/div/form/div/div/div[3]/div/select", "xpath:idRelative"],
+        ["xpath=//div[3]/div/select", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "77782bbc-094f-4c27-9278-0c8b33766f82",
+      "comment": "",
+      "command": "select",
+      "target": "id=field-:r5:",
+      "targets": [],
+      "value": "label=Boogie Lab Zagreb, Ulica kneza Borne 26, Zagreb"
+    }, {
+      "id": "a3f8cc24-83c3-4073-ad35-51621ca5d186",
+      "comment": "",
+      "command": "click",
+      "target": "css=#field-\\3Ar5\\3A > option:nth-child(1)",
+      "targets": [
+        ["css=#field-\\3Ar5\\3A > option:nth-child(1)", "css:finder"],
+        ["xpath=//option[@value='1']", "xpath:attributes"],
+        ["xpath=//select[@id='field-:r5:']/option", "xpath:idRelative"],
+        ["xpath=//div[3]/div/select/option", "xpath:position"],
+        ["xpath=//option[contains(.,'Boogie Lab Zagreb, Ulica kneza Borne 26, Zagreb')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "3486033a-106a-4224-8718-3c345a31129d",
+      "comment": "",
+      "command": "click",
+      "target": "css=.chakra-button",
+      "targets": [
+        ["css=.chakra-button", "css:finder"],
+        ["xpath=//button[@type='submit']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/main/div/form/button", "xpath:idRelative"],
+        ["xpath=//button", "xpath:position"],
+        ["xpath=//button[contains(.,'submit')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "dbf0a1cd-0578-4e76-9867-1fcf5a2a2b5c",
+      "comment": "",
+      "command": "click",
+      "target": "css=.chakra-form-control:nth-child(3) .chakra-radio:nth-child(1)",
+      "targets": [
+        ["css=.chakra-form-control:nth-child(3) .chakra-radio:nth-child(1)", "css:finder"],
+        ["xpath=//div[@id='root']/div/main/div/form/div/div[2]/div[3]/div/div/label", "xpath:idRelative"],
+        ["xpath=//div[3]/div/div/label", "xpath:position"],
+        ["xpath=//label[contains(.,'10:00:00 - 11:30:00')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "4ddf646c-ecbd-4275-a681-e48fd7b5d030",
+      "comment": "",
+      "command": "click",
+      "target": "css=.chakra-button",
+      "targets": [
+        ["css=.chakra-button", "css:finder"],
+        ["xpath=//button[@type='submit']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/main/div/form/button", "xpath:idRelative"],
+        ["xpath=//button", "xpath:position"],
+        ["xpath=//button[contains(.,'submit')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "62c600c8-3a61-4222-8d2b-157bc410b6e7",
+      "comment": "",
+      "command": "click",
+      "target": "css=.chakra-card:nth-child(4) .css-166re2f",
+      "targets": [
+        ["css=.chakra-card:nth-child(4) .css-166re2f", "css:finder"],
+        ["xpath=//div[@id='root']/div/main/div/div[4]/div/div", "xpath:idRelative"],
+        ["xpath=//div[4]/div/div", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "17cb8e48-3a10-4a06-a261-9456d174f691",
+      "comment": "",
+      "command": "click",
+      "target": "css=.css-5aby06",
+      "targets": [
+        ["css=.css-5aby06", "css:finder"],
+        ["xpath=//div[@id='root']/div/main/div", "xpath:idRelative"],
+        ["xpath=//main/div", "xpath:position"]
+      ],
+      "value": ""
+    }]
+  }],
+  "suites": [{
+    "id": "0049824e-22d6-4474-9951-8914a9e3e238",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["2edace3b-18f5-4e52-b2f0-6befda814388"]
+  }],
+  "urls": ["http://localhost:3000/"],
+  "plugins": []
+}
