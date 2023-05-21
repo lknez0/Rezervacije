@@ -16,7 +16,6 @@
   - Brisanje rezervacija
   
 #### Mogućnost odabira vrijednosti stranog ključa putem padajuće liste u zaglavlju i detaljima složenog ekrana
-  - Odabir stranog ključa pri filtriranju rezervacija
   - Odabir stranog ključa u formi za kreiranje nove rezervacije
 
 #### Validacija podataka koja se ne svodi na provjeru je li podatak popunjen, u valjanom rasponu, već se provjerava neko složenije pravilo
